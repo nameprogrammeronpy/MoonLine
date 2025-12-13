@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoonLine - Your Mental Savior</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #1A1A2E;
+            --bg-medium: #16213E;
+            --accent-glow: #64C4ED;
+            --accent-moon: #E8E8E8;
+            --accent-soft: #94A3B8;
+            --accent-lavender: #C9B6E4;
+            --text-light: #F1F5F9;
+            --bg-light: #F8FAFC;
+            --text-dark: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            transition: background 0.5s ease, color 0.5s ease;
+        }
+
+        body.light-mode {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        /* Фоны для разных тем */
+        .bg-dark-theme, .bg-light-theme {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .bg-dark-theme {
+            background: url('{{ url_for("static", filename="images/backgrounddarktheme.jpg") }}') center/cover no-repeat;
+            opacity: 1;
+        }
+
+        .bg-light-theme {
+            background: url('{{ url_for("static", filename="images/backgroundbrighttheme.jpg") }}') center/cover no-repeat;
+            opacity: 0;
+        }
+
+        body.light-mode .bg-dark-theme { opacity: 0; }
+        body.light-mode .bg-light-theme { opacity: 1; }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(26, 26, 46, 0.2) 0%, rgba(26, 26, 46, 0.4) 100%);
+            z-index: 1;
+            transition: background 0.5s ease;
+        }
+
+        body.light-mode .bg-overlay {
+            background: linear-gradient(180deg, rgba(248, 250, 252, 0.1) 0%, rgba(248, 250, 252, 0.3) 100%);
+        }
+
+        /* Fluid Canvas */
+        #fluid-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .content-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .title-h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(4rem, 14vw, 11rem);
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            color: var(--text-light);
+            opacity: 0;
+            animation: titleReveal 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s forwards;
+        }
+
+        body.light-mode .title-h1 {
+            color: var(--text-dark);
+        }
+
+        @keyframes titleReveal {
+            0% { opacity: 0; transform: translateY(30px); letter-spacing: 0.3em; }
+            100% { opacity: 1; transform: translateY(0); letter-spacing: 0.15em; }
+        }
+
+        .title-line {
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-soft), transparent);
+            margin: 25px auto 0;
+            animation: lineGrow 1.2s ease-out 1s forwards;
+        }
+
+        body.light-mode .title-line {
+            background: linear-gradient(90deg, transparent, var(--accent-lavender), transparent);
+        }
+
+        @keyframes lineGrow { to { width: 60%; } }
+
+        .subtitle {
+            font-size: clamp(0.75rem, 2vw, 1rem);
+            font-weight: 300;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--accent-soft);
+            margin-top: 30px;
+            opacity: 0;
+            animation: subtitleFade 1s ease 1.5s forwards;
+        }
+
+        body.light-mode .subtitle { color: var(--text-dark); opacity: 0.7; }
+
+        @keyframes subtitleFade { to { opacity: 0.8; } }
+
+        /* ===== ФОРМА ===== */
+        .form-container {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            z-index: 10;
+            pointer-events: auto;
+        }
+
+        .container {
+            position: relative;
+            background: rgba(26, 26, 46, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 28px 24px 18px;
+            width: 300px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transition: background 0.5s ease, border-color 0.5s ease;
+        }
+
+        body.light-mode .container {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(0, 0, 0, 0.05);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .container:before {
+            content: "";
+            position: absolute;
+            left: 0; bottom: 0; right: 0;
+            height: 55%;
+            background: inherit;
+            border-radius: 20px;
+            z-index: 2;
+        }
+
+        .card {
+            position: relative;
+            z-index: 3;
+        }
+
+        .tab-switcher {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+
+        body.light-mode .tab-switcher { background: rgba(0, 0, 0, 0.04); }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--accent-soft);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+        }
+
+        body.light-mode .tab-btn { color: var(--text-dark); opacity: 0.6; }
+        body.light-mode .tab-btn.active { background: rgba(0, 0, 0, 0.06); color: var(--text-dark); opacity: 1; }
+
+        .auth-form { display: none; }
+        .auth-form.active { display: block; }
+
+        /* Input группы */
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--accent-soft);
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+        }
+
+        body.light-mode .input-group label { color: var(--text-dark); opacity: 0.6; }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-group input::placeholder { color: rgba(255, 255, 255, 0.3); }
+
+        .input-group input:focus {
+            border-color: var(--accent-glow);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 3px rgba(100, 196, 237, 0.1);
+        }
+
+        body.light-mode .input-group input {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: var(--text-dark);
+        }
+
+        body.light-mode .input-group input::placeholder { color: rgba(0, 0, 0, 0.3); }
+
+        body.light-mode .input-group input:focus {
+            border-color: var(--accent-lavender);
+            box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
+        }
+
+        /* ===== СВЕТЯЩАЯСЯ КНОПКА SUBMIT (ФИОЛЕТОВАЯ) ===== */
+        .submit-btn {
+            position: relative;
+            display: block;
+            width: 100%;
+            padding: 14px 20px;
+            margin-top: 15px;
+            color: #a78bfa;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-decoration: none;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            overflow: hidden;
+            transition: 0.5s;
+        }
+
+        .submit-btn:hover {
+            background: #a78bfa;
+            color: #000;
+            border-radius: 5px;
+            box-shadow: 0 0 5px #a78bfa,
+                        0 0 25px #a78bfa,
+                        0 0 50px #a78bfa,
+                        0 0 100px #a78bfa;
+        }
+
+        .submit-btn span {
+            position: absolute;
+            display: block;
+        }
+
+        .submit-btn span:nth-child(1) {
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #a78bfa);
+            animation: btn-anim1 1.5s linear infinite;
+        }
+
+        @keyframes btn-anim1 {
+            0% { left: -100%; }
+            50%, 100% { left: 100%; }
+        }
+
+        .submit-btn span:nth-child(2) {
+            top: -100%;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, transparent, #a78bfa);
+            animation: btn-anim2 1.5s linear infinite;
+            animation-delay: .375s;
+        }
+
+        @keyframes btn-anim2 {
+            0% { top: -100%; }
+            50%, 100% { top: 100%; }
+        }
+
+        .submit-btn span:nth-child(3) {
+            bottom: 0;
+            right: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(270deg, transparent, #a78bfa);
+            animation: btn-anim3 1.5s linear infinite;
+            animation-delay: .75s;
+        }
+
+        @keyframes btn-anim3 {
+            0% { right: -100%; }
+            50%, 100% { right: 100%; }
+        }
+
+        .submit-btn span:nth-child(4) {
+            bottom: -100%;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(360deg, transparent, #a78bfa);
+            animation: btn-anim4 1.5s linear infinite;
+            animation-delay: 1.125s;
+        }
+
+        @keyframes btn-anim4 {
+            0% { bottom: -100%; }
+            50%, 100% { bottom: 100%; }
+        }
+
+        body.light-mode .submit-btn { color: #7c3aed; }
+        body.light-mode .submit-btn:hover {
+            background: #7c3aed;
+            color: #fff;
+            box-shadow: 0 0 5px #7c3aed,
+                        0 0 25px #7c3aed,
+                        0 0 50px #7c3aed;
+        }
+
+        body.light-mode .submit-btn span:nth-child(1) { background: linear-gradient(90deg, transparent, #7c3aed); }
+        body.light-mode .submit-btn span:nth-child(2) { background: linear-gradient(180deg, transparent, #7c3aed); }
+        body.light-mode .submit-btn span:nth-child(3) { background: linear-gradient(270deg, transparent, #7c3aed); }
+        body.light-mode .submit-btn span:nth-child(4) { background: linear-gradient(360deg, transparent, #7c3aed); }
+
+        .card_info {
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--accent-soft);
+            margin-top: 15px;
+        }
+
+        .card_info a {
+            color: var(--text-light);
+            text-decoration: none;
+            cursor: pointer;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .card_info a:hover { border-bottom-color: var(--text-light); }
+
+        body.light-mode .card_info { color: var(--text-dark); opacity: 0.6; }
+        body.light-mode .card_info a { color: var(--text-dark); opacity: 1; }
+
+        /* Рыбка */
+        .fish-shadow-con {
+            opacity: 0.1;
+            filter: blur(8px);
+            position: absolute;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .fish, .fish-shadow {
+            width: 360px;
+            height: auto;
+            position: absolute;
+            top: -85px;
+            left: -105px;
+            animation: fishAppear 2s ease-out forwards;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .fish-shadow {
+            top: -70px;
+            left: -90px;
+            filter: url(#goo);
+        }
+
+        @keyframes fishAppear {
+            0% { opacity: 0; }
+            100% { opacity: 0.8; }
+        }
+
+        .line { fill: none !important; }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            z-index: 100;
+            pointer-events: auto;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+        }
+
+        .switch__input {
+            background-color: var(--accent-glow);
+            border-radius: 0.75em;
+            outline: transparent;
+            position: relative;
+            width: 3em;
+            height: 1.5em;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .switch__input:checked { background-color: var(--accent-lavender); }
+
+        .switch__input:before {
+            content: "";
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: inherit;
+            inset: 0;
+        }
+
+        .switch__input:after {
+            content: "";
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            top: 0.125em;
+            left: 0.125em;
+            width: 1.25em;
+            height: 1.25em;
+            transition: transform 0.3s ease;
+        }
+
+        .switch__input:checked:after { transform: translateX(1.5em); }
+
+        .switch__icon {
+            position: absolute;
+            top: 0.375em;
+            width: 0.75em;
+            height: 0.75em;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .switch__icon--light { right: 0.375em; opacity: 1; }
+        .switch__icon--dark { right: 0.375em; opacity: 0; transform: translateX(-0.75em) rotate(30deg) scale(0.75); }
+
+        .switch__input:checked ~ .switch__icon--light { opacity: 0; transform: translateX(-0.75em) rotate(-30deg) scale(0.75); }
+        .switch__input:checked ~ .switch__icon--dark { opacity: 1; transform: translateX(-1.5em); }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-dark);
+            border: 1px solid rgba(100, 196, 237, 0.3);
+            padding: 15px 30px;
+            border-radius: 12px;
+            z-index: 2000;
+            transition: transform 0.4s ease;
+            color: var(--text-light);
+        }
+
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.success { border-left: 4px solid #4ADE80; }
+        .toast.error { border-left: 4px solid #F87171; }
+
+        body.light-mode .toast { background: white; color: var(--text-dark); }
+
+        @media (max-width: 768px) {
+            .form-container { top: auto; bottom: 20px; right: 50%; transform: translateX(50%); }
+            .container { width: 90vw; max-width: 300px; }
+            .hero { top: 35%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Фоны -->
+    <div class="bg-dark-theme"></div>
+    <div class="bg-light-theme"></div>
+    <div class="bg-overlay"></div>
+
+    <canvas id="fluid-canvas"></canvas>
+
+    <div class="content-layer">
+        <section class="hero">
+            <h1 class="title-h1">MoonLine</h1>
+            <div class="title-line"></div>
+            <p class="subtitle">Your mental savior</p>
+        </section>
+    </div>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <label class="switch">
+            <input class="switch__input" type="checkbox" role="switch" id="theme-switch">
+            <svg class="switch__icon switch__icon--light" viewBox="0 0 12 12" width="12px" height="12px">
+                <g fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round">
+                    <circle cx="6" cy="6" r="2" />
+                    <g stroke-dasharray="1.5 1.5">
+                        <polyline points="6 10,6 11.5" transform="rotate(0,6,6)" />
+                        <polyline points="6 10,6 11.5" transform="rotate(45,6,6)" />
+                        <polyline points="6 10,6 11.5" transform="rotate(90,6,6)" />
+                        <polyline points="6 10,6 11.5" transform="rotate(135,6,6)" />
+                        <polyline points="6 10,6 11.5" transform="rotate(180,6,6)" />
+                        <polyline points="6 10,6 11.5" transform="rotate(225,6,6)" />
+                        <polyline points="6 10,6 11.5" transform="rotate(270,6,6)" />
+                        <polyline points="6 10,6 11.5" transform="rotate(315,6,6)" />
+                    </g>
+                </g>
+            </svg>
+            <svg class="switch__icon switch__icon--dark" viewBox="0 0 12 12" width="12px" height="12px">
+                <g fill="none" stroke="#fff" stroke-width="1" stroke-linejoin="round" transform="rotate(-45,6,6)">
+                    <path d="m9,10c-2.209,0-4-1.791-4-4s1.791-4,4-4c.304,0,.598.041.883.105-.995-.992-2.367-1.605-3.883-1.605C2.962.5.5,2.962.5,6s2.462,5.5,5.5,5.5c1.516,0,2.888-.613,3.883-1.605-.285.064-.578.105-.883.105Z"/>
+                </g>
+            </svg>
+        </label>
+    </div>
+
+    <!-- Форма -->
+    <div class="form-container">
+        <div class="container">
+            <div class="tab-switcher">
+                <button class="tab-btn active" data-tab="login-form">Sign In</button>
+                <button class="tab-btn" data-tab="register-form">Sign Up</button>
+            </div>
+
+            <div class="card">
+                <form id="login-form" class="auth-form active">
+                    <div class="input-group">
+                        <label>Username</label>
+                        <input type="text" name="name" placeholder="Enter username" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" name="password" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        Submit
+                    </button>
+                </form>
+
+                <form id="register-form" class="auth-form">
+                    <div class="input-group">
+                        <label>Username</label>
+                        <input type="text" name="name" placeholder="Choose username" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" name="password" placeholder="Create password" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Confirm Password</label>
+                        <input type="password" name="confirm_password" placeholder="Confirm password" required>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        Submit
+                    </button>
+                </form>
+
+                <div class="card_info">
+                    <p id="switch-text">No account? <a id="switch-link">Create one</a></p>
+                </div>
+            </div>
+
+            <!-- Fish Shadow -->
+            <div class="fish-shadow-con">
+                <svg class="fish-shadow" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 743 645">
+                    <defs><filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo"/><feBlend in="SourceGraphic" in2="goo"/></filter></defs>
+                    <g fill="none"><path d="M177.367 337.568L182.709 357.739C198.517 417.421 249.748 460.995 311.193 467.019L421.508 477.834C478.237 483.396 532.831 454.649 560.346 404.729C607.09 319.923 557.549 214.182 462.47 195.822L375.079 178.946C368.369 177.651 361.766 175.854 355.324 173.572C251.651 136.837 149.205 231.245 177.367 337.568Z" class="line" id="LS"/>
+                    <g transform="translate(-103,3)" fill="#94A3B8"><g transform="translate(118.4,38) rotate(-89) translate(-118.4,-38) translate(104.4,24)"><path d="M14.17,27.51C19.97,27.51 24.67,22.81 24.67,17.01C24.67,15.83 28.2,2.1 27.83,1.03C26.42,-3.1 18.78,6.51 14.17,6.51C9.87,6.51 1.67,-2.67 0.05,1.03C-0.51,2.32 3.67,15.52 3.67,17.01C3.67,22.81 8.37,27.51 14.17,27.51Z"/></g><animateMotion dur="6s" repeatCount="indefinite" rotate="auto"><mpath xlink:href="#LS"/></animateMotion></g>
+                    <g transform="translate(-71,3)" fill="#94A3B8"><g transform="translate(96.9,37.4) rotate(-89) translate(-96.9,-37.4) translate(60.4,13.4)"><ellipse cx="36.5" cy="24" rx="16.5" ry="24"/><path d="M52.84,28.42C56.98,28.42 67.84,23.87 67.84,17.79C67.84,16.33 72.74,8.07 72.39,6.79C71.27,2.76 63.49,6.79 60.34,6.79C56.2,6.79 52.84,11.72 52.84,17.79C52.84,23.87 48.7,28.42 52.84,28.42Z"/><path d="M1.84,28.42C5.98,28.42 16.84,23.87 16.84,17.79C16.84,16.33 21.74,8.07 21.39,6.79C20.27,2.76 12.49,6.79 9.34,6.79C5.2,6.79 1.84,11.72 1.84,17.79C1.84,23.87 -2.3,28.42 1.84,28.42Z" transform="translate(10.7,16.7) scale(-1,1) translate(-10.7,-16.7)"/></g><animateMotion dur="6s" begin="0.1s" repeatCount="indefinite" rotate="auto"><mpath xlink:href="#LS"/></animateMotion></g>
+                    <g transform="translate(-58,3)" fill="#CBD5E1"><g transform="translate(83.9,36.9) rotate(-89) translate(-83.9,-36.9) translate(69.4,12.9)"><path d="M14.17,48C19.41,48 23.9,41.8 25.76,33.02C26.35,30.23 28.83,32.14 28.83,28.95C28.83,15.7 21.08,0 14.17,0C7.27,0 0,13.75 0,27C0,29.98 1.96,29.84 2.47,32.47C4.26,41.55 8.82,48 14.17,48Z"/></g><animateMotion dur="6s" begin="0.2s" repeatCount="indefinite" rotate="auto"><mpath xlink:href="#LS"/></animateMotion></g>
+                    <g transform="translate(-48,3)" fill="#CBD5E1"><g transform="translate(73.9,37.2) rotate(-89) translate(-73.9,-37.2) translate(61.4,13.2)"><path d="M12.29,48C16.83,48 20.73,41.8 22.33,33.02C22.84,30.23 25,32.14 25,28.95C25,15.7 18.27,0 12.29,0C6.3,0 0,13.75 0,27C0,29.98 1.7,29.84 2.14,32.47C3.69,41.55 7.65,48 12.29,48Z"/></g><animateMotion dur="6s" begin="0.3s" repeatCount="indefinite" rotate="auto"><mpath xlink:href="#LS"/></animateMotion></g>
+                    <g transform="translate(-32,3)" fill="#E2E8F0"><g transform="translate(58.9,36.8) rotate(-89) translate(-58.9,-36.8) translate(49.4,12.8)"><path d="M9.34,48C12.79,48 15.75,41.8 16.97,33.02C17.36,30.23 19,32.14 19,28.95C19,15.7 13.89,0 9.34,0C4.79,0 0,13.75 0,27C0,29.98 1.29,29.84 1.63,32.47C2.8,41.55 5.81,48 9.34,48Z"/></g><animateMotion dur="6s" begin="0.4s" repeatCount="indefinite" rotate="auto"><mpath xlink:href="#LS"/></animateMotion></g>
+                    <g transform="translate(-1,-2)" fill="#E2E8F0"><g transform="translate(23.1,42.2) rotate(-89) translate(-23.1,-42.2) translate(-17.9,20.7)"><path d="M41.76,42.44C43.76,42.44 43.24,38.33 43.23,38.08C43.14,34.84 44.28,34.44 41.65,34.44C39.01,34.44 39.73,34.3 39.82,37.77C39.83,38.02 39.72,42.44 41.76,42.44Z"/><path d="M23.63,37.75C27.31,37.75 36.95,30.56 36.95,20.96C36.95,18.65 41.3,5.59 40.98,3.58C40,-2.79 32.57,0.02 29.4,6.7C26.91,11.95 23.63,11.36 23.63,20.96C23.63,30.56 19.96,37.75 23.63,37.75Z" transform="translate(31.5,18.87) scale(-1,1) translate(-31.5,-18.87)"/><path d="M43.23,38.08C46.91,38.08 56.55,30.88 56.55,21.29C56.55,18.98 60.89,5.92 60.58,3.91C59.59,-2.46 52.17,0.35 49,7.03C46.51,12.28 43.23,11.69 43.23,21.29C43.23,30.88 39.55,38.08 43.23,38.08Z"/></g><animateMotion dur="6s" begin="0.5s" repeatCount="indefinite" rotate="auto"><mpath xlink:href="#LS"/></animateMotion></g>
+                    </g>
+                </svg>
+            </div>
+
+            <!-- Main Fish -->
+            <svg class="fish" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 743 645">
+                <g fill="none"><path d="M177.367 337.568L182.709 357.739C198.517 417.421 249.748 460.995 311.193 467.019L421.508 477.834C478.237 483.396 532.831 454.649 560.346 404.729C607.09 319.923 557.549 214.182 462.47 195.822L375.079 178.946C368.369 177.651 361.766 175.854 355.324 173.572C251.651 136.837 149.205 231.245 177.367 337.568Z" class="line" id="L"/>
+                <g transform="translate(-103,3)" fill="#A78BFA"><g transform="translate(118.4,38) rotate(-89) translate(-118.4,-38) translate(104.4,24)"><path d="M14.17,27.51C19.97,27.51 24.67,22.81 24.67,17.01C24.67,15.83 28.2,2.1 27.83,1.03C26.42,-3.1 18.78,6.51 14.17,6.51C9.87,6.51 1.67,-2.67 0.05,1.03C-0.51,2.32 3.67,15.52 3.67,17.01C3.67,22.81 8.37,27.51 14.17,27.51Z"/></g><animateMotion dur="6s" repeatCount="indefinite" rotate="auto"><mpath xlink:href="#L"/></animateMotion></g>
+                <g transform="translate(-71,3)" fill="#94A3B8"><g transform="translate(96.9,37.4) rotate(-89) translate(-96.9,-37.4) translate(60.4,13.4)"><ellipse cx="36.5" cy="24" rx="16.5" ry="24"/><path d="M52.84,28.42C56.98,28.42 67.84,23.87 67.84,17.79C67.84,16.33 72.74,8.07 72.39,6.79C71.27,2.76 63.49,6.79 60.34,6.79C56.2,6.79 52.84,11.72 52.84,17.79C52.84,23.87 48.7,28.42 52.84,28.42Z"/><path d="M1.84,28.42C5.98,28.42 16.84,23.87 16.84,17.79C16.84,16.33 21.74,8.07 21.39,6.79C20.27,2.76 12.49,6.79 9.34,6.79C5.2,6.79 1.84,11.72 1.84,17.79C1.84,23.87 -2.3,28.42 1.84,28.42Z" transform="translate(10.7,16.7) scale(-1,1) translate(-10.7,-16.7)"/></g><animateMotion dur="6s" begin="0.1s" repeatCount="indefinite" rotate="auto"><mpath xlink:href="#L"/></animateMotion></g>
+                <g transform="translate(-58,3)" fill="#CBD5E1"><g transform="translate(83.9,36.9) rotate(-89) translate(-83.9,-36.9) translate(69.4,12.9)"><path d="M14.17,48C19.41,48 23.9,41.8 25.76,33.02C26.35,30.23 28.83,32.14 28.83,28.95C28.83,15.7 21.08,0 14.17,0C7.27,0 0,13.75 0,27C0,29.98 1.96,29.84 2.47,32.47C4.26,41.55 8.82,48 14.17,48Z"/></g><animateMotion dur="6s" begin="0.2s" repeatCount="indefinite" rotate="auto"><mpath xlink:href="#L"/></animateMotion></g>
+                <g transform="translate(-48,3)" fill="#CBD5E1"><g transform="translate(73.9,37.2) rotate(-89) translate(-73.9,-37.2) translate(61.4,13.2)"><path d="M12.29,48C16.83,48 20.73,41.8 22.33,33.02C22.84,30.23 25,32.14 25,28.95C25,15.7 18.27,0 12.29,0C6.3,0 0,13.75 0,27C0,29.98 1.7,29.84 2.14,32.47C3.69,41.55 7.65,48 12.29,48Z"/></g><animateMotion dur="6s" begin="0.3s" repeatCount="indefinite" rotate="auto"><mpath xlink:href="#L"/></animateMotion></g>
+                <g transform="translate(-32,3)" fill="#E2E8F0"><g transform="translate(58.9,36.8) rotate(-89) translate(-58.9,-36.8) translate(49.4,12.8)"><path d="M9.34,48C12.79,48 15.75,41.8 16.97,33.02C17.36,30.23 19,32.14 19,28.95C19,15.7 13.89,0 9.34,0C4.79,0 0,13.75 0,27C0,29.98 1.29,29.84 1.63,32.47C2.8,41.55 5.81,48 9.34,48Z"/></g><animateMotion dur="6s" begin="0.4s" repeatCount="indefinite" rotate="auto"><mpath xlink:href="#L"/></animateMotion></g>
+                <g transform="translate(-1,-2)" fill="#F1F5F9"><g transform="translate(23.1,42.2) rotate(-89) translate(-23.1,-42.2) translate(-17.9,20.7)"><path d="M41.76,42.44C43.76,42.44 43.24,38.33 43.23,38.08C43.14,34.84 44.28,34.44 41.65,34.44C39.01,34.44 39.73,34.3 39.82,37.77C39.83,38.02 39.72,42.44 41.76,42.44Z"/><path d="M23.63,37.75C27.31,37.75 36.95,30.56 36.95,20.96C36.95,18.65 41.3,5.59 40.98,3.58C40,-2.79 32.57,0.02 29.4,6.7C26.91,11.95 23.63,11.36 23.63,20.96C23.63,30.56 19.96,37.75 23.63,37.75Z" transform="translate(31.5,18.87) scale(-1,1) translate(-31.5,-18.87)"/><path d="M43.23,38.08C46.91,38.08 56.55,30.88 56.55,21.29C56.55,18.98 60.89,5.92 60.58,3.91C59.59,-2.46 52.17,0.35 49,7.03C46.51,12.28 43.23,11.69 43.23,21.29C43.23,30.88 39.55,38.08 43.23,38.08Z"/></g><animateMotion dur="6s" begin="0.5s" repeatCount="indefinite" rotate="auto"><mpath xlink:href="#L"/></animateMotion></g>
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+                document.getElementById('switch-text').innerHTML = btn.dataset.tab === 'login-form'
+                    ? 'No account? <a id="switch-link">Create one</a>'
+                    : 'Have account? <a id="switch-link">Sign in</a>';
+                attachSwitchLink();
+            });
+        });
+
+        function attachSwitchLink() {
+            document.getElementById('switch-link')?.addEventListener('click', () => {
+                const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
+                document.querySelector(`[data-tab="${activeTab === 'login-form' ? 'register-form' : 'login-form'}"]`).click();
+            });
+        }
+        attachSwitchLink();
+
+        // Theme toggle - FIXED
+        const themeSwitch = document.getElementById('theme-switch');
+
+        function applyTheme(isLight) {
+            if (isLight) {
+                document.body.classList.add('light-mode');
+                themeSwitch.checked = true;
+            } else {
+                document.body.classList.remove('light-mode');
+                themeSwitch.checked = false;
+            }
+        }
+
+        // Load saved theme
+        applyTheme(localStorage.getItem('moonline-theme') === 'light');
+
+        themeSwitch.addEventListener('change', () => {
+            const isLight = themeSwitch.checked;
+            applyTheme(isLight);
+            localStorage.setItem('moonline-theme', isLight ? 'light' : 'dark');
+        });
+
+        // Toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Form submissions
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            try {
+                const response = await fetch('/login', { method: 'POST', body: formData });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('Welcome! 🌙', 'success');
+                    setTimeout(() => window.location.href = data.redirect || '/dashboard', 1000);
+                } else {
+                    showToast(data.message || 'Login error', 'error');
+                }
+            } catch (error) {
+                showToast('Connection error', 'error');
+            }
+        });
+
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            if (formData.get('password') !== formData.get('confirm_password')) {
+                showToast('Passwords do not match', 'error');
+                return;
+            }
+            try {
+                const response = await fetch('/register', { method: 'POST', body: formData });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('Account created! 🎉', 'success');
+                    setTimeout(() => window.location.href = data.redirect || '/dashboard', 1000);
+                } else {
+                    showToast(data.message || 'Registration error', 'error');
+                }
+            } catch (error) {
+                showToast('Connection error', 'error');
+            }
+        });
+    </script>
+</body>
+</html>
+

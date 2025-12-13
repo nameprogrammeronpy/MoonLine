@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoonLine — Дневник эмоций</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0D0D1A;
+            --bg-card: rgba(20, 20, 40, 0.85);
+            --accent-glow: #64C4ED;
+            --accent-lavender: #C9B6E4;
+            --text-light: #F0F0F0;
+            --text-muted: #94A3B8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+        }
+
+        body.light-mode {
+            --bg-dark: #F7F9FC;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --text-light: #1E293B;
+            --text-muted: #64748B;
+        }
+
+        .bg-layer {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .bg-dark-theme {
+            background: url('{{ url_for("static", filename="images/backgrounddarktheme.jpg") }}') center/cover no-repeat;
+            opacity: 1;
+        }
+
+        .bg-light-theme {
+            background: url('{{ url_for("static", filename="images/backgroundbrighttheme.jpg") }}') center/cover no-repeat;
+            opacity: 0;
+        }
+
+        body.light-mode .bg-dark-theme { opacity: 0; }
+        body.light-mode .bg-light-theme { opacity: 1; }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, rgba(13, 13, 26, 0.7) 0%, rgba(13, 13, 26, 0.9) 100%);
+            z-index: 1;
+        }
+
+        body.light-mode .bg-overlay {
+            background: linear-gradient(180deg, rgba(247, 249, 252, 0.7) 0%, rgba(247, 249, 252, 0.85) 100%);
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(100, 196, 237, 0.1);
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-btn:hover { color: var(--accent-glow); }
+
+        .header-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+        }
+
+        .theme-switch {
+            position: relative;
+            width: 50px; height: 26px;
+        }
+
+        .theme-switch input { display: none; }
+
+        .theme-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: rgba(100, 196, 237, 0.2);
+            border-radius: 30px;
+            transition: all 0.4s ease;
+        }
+
+        .theme-slider:before {
+            content: "🌙";
+            position: absolute;
+            height: 20px; width: 20px;
+            left: 3px; bottom: 2px;
+            background: var(--bg-card);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+
+        input:checked + .theme-slider:before { transform: translateX(24px); content: "☀️"; }
+
+        /* Main */
+        .main-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 100px 20px 50px;
+        }
+
+        /* New Entry Card */
+        .new-entry-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid rgba(100, 196, 237, 0.15);
+            margin-bottom: 30px;
+        }
+
+        .card-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* Mood Selector */
+        .mood-selector {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .mood-btn {
+            width: 70px; height: 70px;
+            border-radius: 50%;
+            border: 2px solid rgba(100, 196, 237, 0.2);
+            background: rgba(100, 196, 237, 0.08);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mood-btn:hover {
+            transform: scale(1.1);
+            border-color: var(--accent-glow);
+        }
+
+        .mood-btn.selected {
+            border-color: var(--accent-glow);
+            background: rgba(100, 196, 237, 0.2);
+            transform: scale(1.15);
+            box-shadow: 0 0 30px rgba(100, 196, 237, 0.3);
+        }
+
+        .mood-btn[data-mood="1"] { border-color: rgba(248, 113, 113, 0.3); }
+        .mood-btn[data-mood="1"].selected { background: rgba(248, 113, 113, 0.2); box-shadow: 0 0 30px rgba(248, 113, 113, 0.3); }
+        .mood-btn[data-mood="2"] { border-color: rgba(251, 191, 36, 0.3); }
+        .mood-btn[data-mood="2"].selected { background: rgba(251, 191, 36, 0.2); box-shadow: 0 0 30px rgba(251, 191, 36, 0.3); }
+        .mood-btn[data-mood="3"] { border-color: rgba(148, 163, 184, 0.3); }
+        .mood-btn[data-mood="3"].selected { background: rgba(148, 163, 184, 0.2); }
+        .mood-btn[data-mood="4"] { border-color: rgba(134, 239, 172, 0.3); }
+        .mood-btn[data-mood="4"].selected { background: rgba(134, 239, 172, 0.2); box-shadow: 0 0 30px rgba(134, 239, 172, 0.3); }
+        .mood-btn[data-mood="5"] { border-color: rgba(100, 196, 237, 0.3); }
+        .mood-btn[data-mood="5"].selected { background: rgba(100, 196, 237, 0.2); }
+
+        .note-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 20px;
+            background: rgba(100, 196, 237, 0.05);
+            border: 1px solid rgba(100, 196, 237, 0.15);
+            border-radius: 16px;
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            outline: none;
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+        }
+
+        .note-input:focus {
+            border-color: var(--accent-glow);
+            box-shadow: 0 0 0 3px rgba(100, 196, 237, 0.1);
+        }
+
+        .note-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        body.light-mode .note-input {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent-glow), var(--accent-lavender));
+            border: none;
+            border-radius: 12px;
+            color: var(--bg-dark);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(100, 196, 237, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* AI Insight */
+        .ai-insight {
+            margin-top: 25px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(100, 196, 237, 0.1), rgba(201, 182, 228, 0.1));
+            border-radius: 16px;
+            border: 1px solid rgba(100, 196, 237, 0.2);
+            display: none;
+        }
+
+        .ai-insight.show { display: block; animation: fadeIn 0.5s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .ai-avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-glow), var(--accent-lavender));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .ai-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .ai-text {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-light);
+        }
+
+        /* Stats */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(100, 196, 237, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--accent-glow), var(--accent-lavender));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        /* History */
+        .history-section {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid rgba(100, 196, 237, 0.15);
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 25px;
+        }
+
+        .entry-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .entry-item {
+            padding: 20px;
+            background: rgba(100, 196, 237, 0.05);
+            border-radius: 14px;
+            border: 1px solid rgba(100, 196, 237, 0.1);
+        }
+
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .entry-mood {
+            font-size: 2rem;
+        }
+
+        .entry-date {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .entry-note {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .entry-insight {
+            padding: 15px;
+            background: rgba(100, 196, 237, 0.08);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            border-left: 3px solid var(--accent-glow);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state span {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            border: 1px solid rgba(100, 196, 237, 0.3);
+            padding: 15px 30px;
+            border-radius: 12px;
+            z-index: 2000;
+            transition: transform 0.4s ease;
+        }
+
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.success { border-left: 4px solid #86EFAC; }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px; height: 20px;
+            border: 2px solid transparent;
+            border-top-color: var(--bg-dark);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 768px) {
+            .header { padding: 15px 20px; }
+            .main-content { padding: 90px 15px 40px; }
+            .new-entry-card, .history-section { padding: 25px 20px; }
+            .mood-selector { gap: 10px; }
+            .mood-btn { width: 55px; height: 55px; font-size: 1.5rem; }
+            .stats-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer bg-dark-theme"></div>
+    <div class="bg-layer bg-light-theme"></div>
+    <div class="bg-overlay"></div>
+
+    <header class="header">
+        <a href="/dashboard" class="back-btn">← Назад</a>
+        <h2 class="header-title">📔 Дневник эмоций</h2>
+        <label class="theme-switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="theme-slider"></span>
+        </label>
+    </header>
+
+    <main class="main-content">
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.total if stats else 0 }}</div>
+                <div class="stat-label">Записей</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.average if stats else '—' }}</div>
+                <div class="stat-label">Среднее</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ (stats.distribution.get(5, 0) + stats.distribution.get(4, 0)) if stats and stats.distribution else 0 }}</div>
+                <div class="stat-label">Хороших дней</div>
+            </div>
+        </div>
+
+        <!-- New Entry -->
+        <div class="new-entry-card">
+            <h2 class="card-title">Как ты себя сегодня чувствуешь?</h2>
+
+            <div class="mood-selector">
+                <button class="mood-btn" data-mood="1">😢</button>
+                <button class="mood-btn" data-mood="2">😕</button>
+                <button class="mood-btn" data-mood="3">😐</button>
+                <button class="mood-btn" data-mood="4">🙂</button>
+                <button class="mood-btn" data-mood="5">😊</button>
+            </div>
+
+            <textarea class="note-input" placeholder="Что сегодня произошло? Как прошёл день? (необязательно)"></textarea>
+
+            <button class="submit-btn" id="save-btn" disabled>
+                Сохранить запись
+            </button>
+
+            <div class="ai-insight" id="ai-insight">
+                <div class="ai-header">
+                    <div class="ai-avatar">🌙</div>
+                    <span class="ai-name">Luna AI</span>
+                </div>
+                <p class="ai-text" id="ai-text"></p>
+            </div>
+        </div>
+
+        <!-- History -->
+        <div class="history-section">
+            <h2 class="section-title">📖 История записей</h2>
+
+            <div class="entry-list" id="entry-list">
+                {% if entries %}
+                    {% for entry in entries %}
+                    <div class="entry-item">
+                        <div class="entry-header">
+                            <span class="entry-mood">
+                                {% if entry.mood == 1 %}😢{% elif entry.mood == 2 %}😕{% elif entry.mood == 3 %}😐{% elif entry.mood == 4 %}🙂{% else %}😊{% endif %}
+                            </span>
+                            <span class="entry-date">{{ entry.created_at }}</span>
+                        </div>
+                        {% if entry.note %}
+                        <p class="entry-note">{{ entry.note }}</p>
+                        {% endif %}
+                        {% if entry.ai_insight %}
+                        <div class="entry-insight">🌙 {{ entry.ai_insight }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <span>📔</span>
+                        <p>Записей пока нет. Начни отслеживать своё настроение!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Theme
+        const themeToggle = document.getElementById('theme-toggle');
+        if (localStorage.getItem('moonline-theme') === 'light') {
+            document.body.classList.add('light-mode');
+            themeToggle.checked = true;
+        }
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('moonline-theme', themeToggle.checked ? 'light' : 'dark');
+        });
+
+        // Mood selection
+        let selectedMood = null;
+        const moodBtns = document.querySelectorAll('.mood-btn');
+        const saveBtn = document.getElementById('save-btn');
+        const noteInput = document.querySelector('.note-input');
+
+        moodBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                moodBtns.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedMood = parseInt(btn.dataset.mood);
+                saveBtn.disabled = false;
+            });
+        });
+
+        // Toast
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'toast success show';
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Save mood
+        saveBtn.addEventListener('click', async () => {
+            if (!selectedMood) return;
+
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<span class="loading"></span>Сохраняем...';
+
+            try {
+                const res = await fetch('/api/mood', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        mood: selectedMood,
+                        note: noteInput.value.trim()
+                    })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    showToast('Настроение сохранено! ✨');
+
+                    // Show AI insight
+                    if (data.ai_insight) {
+                        document.getElementById('ai-text').textContent = data.ai_insight;
+                        document.getElementById('ai-insight').classList.add('show');
+                    }
+
+                    // Reset form
+                    moodBtns.forEach(b => b.classList.remove('selected'));
+                    noteInput.value = '';
+                    selectedMood = null;
+
+                    // Reload page to show new entry
+                    setTimeout(() => location.reload(), 2000);
+                }
+            } catch (err) {
+                showToast('Ошибка сохранения');
+            }
+
+            saveBtn.innerHTML = 'Сохранить запись';
+        });
+    </script>
+</body>
+</html>
+

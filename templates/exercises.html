@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoonLine — Антистресс практики</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0D0D1A;
+            --bg-card: rgba(20, 20, 40, 0.85);
+            --accent-glow: #64C4ED;
+            --accent-lavender: #C9B6E4;
+            --accent-peach: #FFB6A3;
+            --accent-mint: #86EFAC;
+            --text-light: #F0F0F0;
+            --text-muted: #94A3B8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+        }
+
+        body.light-mode {
+            --bg-dark: #F7F9FC;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --text-light: #1E293B;
+            --text-muted: #64748B;
+        }
+
+        .bg-layer {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .bg-dark-theme {
+            background: url('{{ url_for("static", filename="images/backgrounddarktheme.jpg") }}') center/cover no-repeat;
+            opacity: 1;
+        }
+
+        .bg-light-theme {
+            background: url('{{ url_for("static", filename="images/backgroundbrighttheme.jpg") }}') center/cover no-repeat;
+            opacity: 0;
+        }
+
+        body.light-mode .bg-dark-theme { opacity: 0; }
+        body.light-mode .bg-light-theme { opacity: 1; }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, rgba(13, 13, 26, 0.7) 0%, rgba(13, 13, 26, 0.9) 100%);
+            z-index: 1;
+        }
+
+        body.light-mode .bg-overlay {
+            background: linear-gradient(180deg, rgba(247, 249, 252, 0.7) 0%, rgba(247, 249, 252, 0.85) 100%);
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(100, 196, 237, 0.1);
+        }
+
+        .back-btn {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-btn:hover { color: var(--accent-glow); }
+
+        .header-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+        }
+
+        .theme-switch {
+            position: relative;
+            width: 50px; height: 26px;
+        }
+
+        .theme-switch input { display: none; }
+
+        .theme-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: rgba(100, 196, 237, 0.2);
+            border-radius: 30px;
+            transition: all 0.4s ease;
+        }
+
+        .theme-slider:before {
+            content: "🌙";
+            position: absolute;
+            height: 20px; width: 20px;
+            left: 3px; bottom: 2px;
+            background: var(--bg-card);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+
+        input:checked + .theme-slider:before { transform: translateX(24px); content: "☀️"; }
+
+        /* Main */
+        .main-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 100px 20px 50px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-title h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        /* Exercises Grid */
+        .exercises-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .exercise-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(100, 196, 237, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .exercise-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(100, 196, 237, 0.3);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .exercise-card.breathing { border-top: 3px solid var(--accent-glow); }
+        .exercise-card.grounding { border-top: 3px solid var(--accent-lavender); }
+        .exercise-card.meditation { border-top: 3px solid var(--accent-mint); }
+        .exercise-card.body { border-top: 3px solid var(--accent-peach); }
+
+        .exercise-icon { font-size: 2.5rem; margin-bottom: 20px; }
+        .exercise-title { font-size: 1.3rem; font-weight: 500; margin-bottom: 10px; }
+        .exercise-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 15px; }
+        .exercise-time { font-size: 0.8rem; color: var(--accent-glow); display: flex; align-items: center; gap: 6px; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .exercise-modal {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 50px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(100, 196, 237, 0.2);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px; right: 20px;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: rgba(100, 196, 237, 0.1);
+            border: none;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover { background: rgba(100, 196, 237, 0.2); }
+
+        /* Breathing Animation */
+        .breath-circle {
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(100, 196, 237, 0.3), rgba(201, 182, 228, 0.3));
+            border: 2px solid var(--accent-glow);
+            margin: 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            transition: transform 4s ease-in-out;
+        }
+
+        .breath-circle.inhale { transform: scale(1.3); }
+        .breath-circle.exhale { transform: scale(1); }
+
+        .breath-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .breath-instruction {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+
+        .breath-counter {
+            font-size: 3rem;
+            font-weight: 300;
+            color: var(--accent-glow);
+        }
+
+        .control-btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, var(--accent-glow), var(--accent-lavender));
+            border: none;
+            border-radius: 30px;
+            color: var(--bg-dark);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(100, 196, 237, 0.3);
+        }
+
+        /* Grounding Steps */
+        .grounding-step {
+            background: rgba(100, 196, 237, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .step-number {
+            display: inline-flex;
+            width: 35px; height: 35px;
+            background: linear-gradient(135deg, var(--accent-glow), var(--accent-lavender));
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--bg-dark);
+            margin-right: 15px;
+        }
+
+        .step-text {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .step-items {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .step-item {
+            padding: 10px 20px;
+            background: rgba(100, 196, 237, 0.1);
+            border: 1px solid rgba(100, 196, 237, 0.2);
+            border-radius: 25px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .step-item.checked {
+            background: linear-gradient(135deg, var(--accent-glow), var(--accent-lavender));
+            color: var(--bg-dark);
+            border-color: transparent;
+        }
+
+        @media (max-width: 768px) {
+            .header { padding: 15px 20px; }
+            .main-content { padding: 90px 15px 40px; }
+            .exercise-modal { padding: 35px 25px; }
+            .breath-circle { width: 150px; height: 150px; font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer bg-dark-theme"></div>
+    <div class="bg-layer bg-light-theme"></div>
+    <div class="bg-overlay"></div>
+
+    <header class="header">
+        <a href="/dashboard" class="back-btn">← Назад</a>
+        <h2 class="header-title">🧘 Антистресс практики</h2>
+        <label class="theme-switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="theme-slider"></span>
+        </label>
+    </header>
+
+    <main class="main-content">
+        <div class="page-title">
+            <h1>Практики для расслабления</h1>
+            <p>Выбери упражнение и начни путь к спокойствию</p>
+        </div>
+
+        <div class="exercises-grid">
+            <div class="exercise-card breathing" onclick="openBreathing()">
+                <div class="exercise-icon">🌬️</div>
+                <h3 class="exercise-title">Дыхание 4-7-8</h3>
+                <p class="exercise-desc">Техника глубокого дыхания для быстрого снятия тревоги и стресса. Помогает активировать парасимпатическую нервную систему.</p>
+                <div class="exercise-time">⏱️ 3-5 минут</div>
+            </div>
+
+            <div class="exercise-card grounding" onclick="openGrounding()">
+                <div class="exercise-icon">🌍</div>
+                <h3 class="exercise-title">Заземление 5-4-3-2-1</h3>
+                <p class="exercise-desc">Техника осознанности, которая помогает вернуться в настоящий момент при тревоге или панике.</p>
+                <div class="exercise-time">⏱️ 5-10 минут</div>
+            </div>
+
+            <div class="exercise-card breathing" onclick="openBoxBreathing()">
+                <div class="exercise-icon">🔲</div>
+                <h3 class="exercise-title">Квадратное дыхание</h3>
+                <p class="exercise-desc">Простая, но мощная техника. Используется Navy SEALs для сохранения спокойствия в стрессовых ситуациях.</p>
+                <div class="exercise-time">⏱️ 4 минуты</div>
+            </div>
+
+            <div class="exercise-card body" onclick="openBodyScan()">
+                <div class="exercise-icon">🧘</div>
+                <h3 class="exercise-title">Сканирование тела</h3>
+                <p class="exercise-desc">Медитативная практика для осознания телесных ощущений и снятия мышечного напряжения.</p>
+                <div class="exercise-time">⏱️ 10 минут</div>
+            </div>
+
+            <div class="exercise-card meditation" onclick="openGratitude()">
+                <div class="exercise-icon">🙏</div>
+                <h3 class="exercise-title">Практика благодарности</h3>
+                <p class="exercise-desc">Упражнение для переключения фокуса на позитив. Научно доказано, что улучшает настроение.</p>
+                <div class="exercise-time">⏱️ 5 минут</div>
+            </div>
+
+            <div class="exercise-card meditation" onclick="openQuickCalm()">
+                <div class="exercise-icon">⚡</div>
+                <h3 class="exercise-title">Быстрое успокоение</h3>
+                <p class="exercise-desc">Экспресс-техника для моментального снижения стресса. Идеально перед важным событием.</p>
+                <div class="exercise-time">⏱️ 30 секунд</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Breathing Modal -->
+    <div class="modal-overlay" id="breathing-modal">
+        <div class="exercise-modal">
+            <button class="close-modal" onclick="closeModal()">✕</button>
+            <h2>🌬️ Дыхание 4-7-8</h2>
+            <div class="breath-circle" id="breath-circle">😌</div>
+            <div class="breath-text" id="breath-text">Приготовься</div>
+            <div class="breath-instruction" id="breath-instruction">Найди удобное положение и расслабься</div>
+            <div class="breath-counter" id="breath-counter"></div>
+            <button class="control-btn" id="breath-btn" onclick="startBreathing()">Начать</button>
+        </div>
+    </div>
+
+    <!-- Grounding Modal -->
+    <div class="modal-overlay" id="grounding-modal">
+        <div class="exercise-modal" style="max-width: 550px; text-align: left;">
+            <button class="close-modal" onclick="closeModal()">✕</button>
+            <h2 style="text-align: center;">🌍 Заземление 5-4-3-2-1</h2>
+            <p style="text-align: center; color: var(--text-muted); margin: 15px 0 25px;">Нажимай на элементы, которые замечаешь</p>
+
+            <div class="grounding-step">
+                <span class="step-number">5</span>
+                <span class="step-text">Назови 5 вещей, которые ты ВИДИШЬ</span>
+                <div class="step-items" id="see-items"></div>
+            </div>
+
+            <div class="grounding-step">
+                <span class="step-number">4</span>
+                <span class="step-text">Назови 4 вещи, которые ты можешь ПОТРОГАТЬ</span>
+                <div class="step-items" id="touch-items"></div>
+            </div>
+
+            <div class="grounding-step">
+                <span class="step-number">3</span>
+                <span class="step-text">Назови 3 вещи, которые ты СЛЫШИШЬ</span>
+                <div class="step-items" id="hear-items"></div>
+            </div>
+
+            <div class="grounding-step">
+                <span class="step-number">2</span>
+                <span class="step-text">Назови 2 вещи, которые ты ЧУВСТВУЕШЬ (запах)</span>
+                <div class="step-items" id="smell-items"></div>
+            </div>
+
+            <div class="grounding-step">
+                <span class="step-number">1</span>
+                <span class="step-text">Назови 1 вещь, которую ты ОЩУЩАЕШЬ на вкус</span>
+                <div class="step-items" id="taste-items"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme
+        const themeToggle = document.getElementById('theme-toggle');
+        if (localStorage.getItem('moonline-theme') === 'light') {
+            document.body.classList.add('light-mode');
+            themeToggle.checked = true;
+        }
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('moonline-theme', themeToggle.checked ? 'light' : 'dark');
+        });
+
+        // Modals
+        function closeModal() {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+            stopBreathing();
+        }
+
+        // Close on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+        });
+
+        // ===== BREATHING 4-7-8 =====
+        let breathingInterval = null;
+        let breathingTimeout = null;
+
+        function openBreathing() {
+            document.getElementById('breathing-modal').classList.add('active');
+            resetBreathing();
+        }
+
+        function resetBreathing() {
+            document.getElementById('breath-text').textContent = 'Приготовься';
+            document.getElementById('breath-instruction').textContent = 'Найди удобное положение и расслабься';
+            document.getElementById('breath-counter').textContent = '';
+            document.getElementById('breath-btn').textContent = 'Начать';
+            document.getElementById('breath-circle').className = 'breath-circle';
+        }
+
+        function stopBreathing() {
+            if (breathingInterval) clearInterval(breathingInterval);
+            if (breathingTimeout) clearTimeout(breathingTimeout);
+        }
+
+        function startBreathing() {
+            const btn = document.getElementById('breath-btn');
+            if (btn.textContent === 'Остановить') {
+                stopBreathing();
+                resetBreathing();
+                return;
+            }
+
+            btn.textContent = 'Остановить';
+            let cycle = 0;
+            const maxCycles = 4;
+
+            function runCycle() {
+                if (cycle >= maxCycles) {
+                    document.getElementById('breath-text').textContent = 'Отлично! 🎉';
+                    document.getElementById('breath-instruction').textContent = 'Ты справился! Как себя чувствуешь?';
+                    document.getElementById('breath-counter').textContent = '';
+                    btn.textContent = 'Повторить';
+                    return;
+                }
+
+                // Inhale 4s
+                document.getElementById('breath-text').textContent = 'Вдох';
+                document.getElementById('breath-instruction').textContent = 'Медленно вдыхай через нос';
+                document.getElementById('breath-circle').classList.add('inhale');
+                countdown(4, () => {
+                    // Hold 7s
+                    document.getElementById('breath-text').textContent = 'Задержка';
+                    document.getElementById('breath-instruction').textContent = 'Задержи дыхание';
+                    countdown(7, () => {
+                        // Exhale 8s
+                        document.getElementById('breath-text').textContent = 'Выдох';
+                        document.getElementById('breath-instruction').textContent = 'Медленно выдыхай через рот';
+                        document.getElementById('breath-circle').classList.remove('inhale');
+                        document.getElementById('breath-circle').classList.add('exhale');
+                        countdown(8, () => {
+                            document.getElementById('breath-circle').classList.remove('exhale');
+                            cycle++;
+                            runCycle();
+                        });
+                    });
+                });
+            }
+
+            runCycle();
+        }
+
+        function countdown(seconds, callback) {
+            let count = seconds;
+            document.getElementById('breath-counter').textContent = count;
+            breathingInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    document.getElementById('breath-counter').textContent = count;
+                } else {
+                    clearInterval(breathingInterval);
+                    document.getElementById('breath-counter').textContent = '';
+                    callback();
+                }
+            }, 1000);
+        }
+
+        // ===== GROUNDING 5-4-3-2-1 =====
+        function openGrounding() {
+            document.getElementById('grounding-modal').classList.add('active');
+            initGrounding();
+        }
+
+        function initGrounding() {
+            const categories = {
+                'see-items': ['Стена', 'Окно', 'Потолок', 'Пол', 'Свет', 'Мебель', 'Телефон'],
+                'touch-items': ['Одежда', 'Стул', 'Стол', 'Волосы', 'Кожа', 'Ткань'],
+                'hear-items': ['Дыхание', 'Шум', 'Тишина', 'Голоса', 'Музыка'],
+                'smell-items': ['Воздух', 'Еда', 'Духи', 'Ничего'],
+                'taste-items': ['Вода', 'Еда', 'Ничего']
+            };
+
+            for (const [id, items] of Object.entries(categories)) {
+                const container = document.getElementById(id);
+                container.innerHTML = items.map(item =>
+                    `<span class="step-item" onclick="this.classList.toggle('checked')">${item}</span>`
+                ).join('');
+            }
+        }
+
+        // ===== OTHER EXERCISES =====
+        function openBoxBreathing() {
+            alert('🔲 Квадратное дыхание:\n\n1. Вдох — 4 секунды\n2. Задержка — 4 секунды\n3. Выдох — 4 секунды\n4. Задержка — 4 секунды\n\nПовтори 4 раза');
+        }
+
+        function openBodyScan() {
+            alert('🧘 Сканирование тела:\n\n1. Ляг или сядь удобно\n2. Закрой глаза\n3. Направь внимание на макушку\n4. Медленно "сканируй" вниз\n5. Замечай ощущения без оценки\n6. Расслабляй каждую часть тела');
+        }
+
+        function openGratitude() {
+            const things = prompt('🙏 Назови 3 вещи, за которые ты благодарен сегодня:');
+            if (things) alert('Отлично! Благодарность помогает мозгу фокусироваться на позитиве 💜');
+        }
+
+        function openQuickCalm() {
+            alert('⚡ Быстрое успокоение (30 сек):\n\n1. Сожми кулаки на 5 секунд\n2. Резко расслабь\n3. Глубокий вдох носом\n4. Медленный выдох ртом\n5. Улыбнись 😊\n\nГотово!');
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,2351 @@
+Выплывающий текст
+
+html
+
+<body>
+  <header class="header">
+    <div class="flex-wrapper">
+      <div class="logo-wrap">
+        <span class="btn-2">HISTORY</span>
+        <span class="btn-2">MUSEUM</span>
+      </div>
+      <ul class="header-menu">
+        <li class="header-menu__item header-text-1">
+          Security
+        </li>
+        <li class="header-menu__item header-text-1">
+          Helpcenter
+        </li>
+      </ul>
+    </div>
+  </header>
+  <section class="hero">
+    <video class="hero-video" autoplay muted loop>
+      <source src="https://cdn.zajno.com/dev/codepen/fossil/fossil.mp4" type="video/mp4"/>
+    </video>
+    <div class="container">
+      <div class="title-block">
+        <div class="title-h1">
+          <div class="title-row title-row-1">
+            <div class="title-charts-cont" id="eve"><span>Eve</span></div>
+            <div class="title-charts-cont" id="ry"><span>ry</span></div>
+            <div class="title-charts-cont" id="fo"><span>fo</span></div>
+            <div class="title-charts-cont" id="ssil"><span>ssil</span></div>
+          </div>
+          <div class="title-row title-row-2">
+            <div class="title-charts-cont" id="tells"><span>tells</span></div>
+            <div class="title-charts-cont" id="a"><span>a</span></div>
+            <div class="title-charts-cont" id="st"><span>st</span></div>
+            <div class="title-charts-cont" id="ory"><span>ory</span></div>
+          </div>
+        </div>
+        <div class="first-desc">
+          <span class="desc-1">Book your free ticket in advance</span>
+        </div>
+        <div class="second-desc">
+          <span class="desc-1">We are open!</span>
+        </div>
+      </div>
+
+      <div class="copyright">
+        <span class="desc-1">2021 ALL RIGHTS RESERVED ©</span>
+      </div>
+
+      <div class="scroll-to">
+        <div class="scroll-to__row">
+          <span class="desc-1">Scroll to</span>
+        </div>
+        <div class="scroll-to__row">
+          <span class="desc-1">find out more</span>
+        </div>
+      </div>
+      <div class="book-btn">
+        <div class="book-btn__circle"></div>
+        <div class="btn-text">
+          <span class="btn-1">
+            Book your ticket
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+
+css
+
+@font-face {
+  font-family: "Reforma 1918";
+}
+@font-face {
+  font-family: "Poppins";
+}
+html {
+  font-size: 6.9444444444vw;
+}
+
+:root {
+  --main-font: "Reforma 1918", sans-serif;
+  --sub-font: "Poppins", sans-serif;
+  --color-black: #000;
+  --color-white: #fff;
+
+  --font-size-h1: 1.41rem;
+  --font-size-desc-1: 0.16rem;
+  --font-size-desc-2: 0.16rem;
+  --font-size-header-text-1: 0.14rem;
+  --font-size-btn-1: 0.18rem;
+  --font-size-btn-2: 0.18rem;
+
+  --line-height-h1: 1.26rem;
+  --line-height-desc-1: 0.16rem;
+  --line-height-desc-2: 0.16rem;
+  --line-height-header-text-1: 0.14rem;
+  --line-height-btn-1: 0.18rem;
+  --line-height-btn-2: 0.18rem;
+}
+
+.title-h1 {
+  font-size: var(--font-size-h1);
+  line-height: var(--line-height-h1);
+  font-weight: 700;
+  color: var(--color-white);
+  font-family: var(--main-font);
+}
+.desc-1 {
+  font-size: var(--font-size-desc-1);
+  line-height: var(--line-height-desc-1);
+  font-weight: 500;
+  color: var(--color-white);
+  font-family: var(--sub-font);
+}
+.desc-2 {
+  font-size: var(--font-size-desc-2);
+  line-height: var(--line-height-desc-2);
+  font-weight: 600;
+  color: var(--color-white);
+  font-family: var(--sub-font);
+}
+.header-text-1 {
+  font-size: var(--font-size-header-text-1);
+  line-height: var(--line-height-header-text-1);
+  font-weight: 500;
+  color: var(--color-white);
+  font-family: var(--sub-font);
+}
+.btn-1 {
+  font-size: var(--font-size-btn-2);
+  line-height: var(--line-height-btn-2);
+  font-weight: 500;
+  color: var(--color-white);
+  font-family: var(--sub-font);
+}
+.btn-2 {
+  font-size: var(--font-size-btn-1);
+  line-height: var(--line-height-btn-1);
+  font-weight: 600;
+  color: var(--color-white);
+  font-family: var(--sub-font);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+}
+
+img {
+  display: block;
+  user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+/* extra long transition to hide blue autofill background */
+input:-webkit-autofill,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:focus {
+  -webkit-transition: background-color 100000000000000000000000000000s 0s, color 100000000000000000000000000000s 0s;
+  transition: background-color 100000000000000000000000000000s 0s, color 100000000000000000000000000000s 0s;
+}
+
+/* Remove Safari autofill*/
+input::-webkit-contacts-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}
+
+input[type=text],
+input[type=number],
+input[type=email],
+input[type=tel],
+textarea {
+  /* remove autofill blue background */
+  box-shadow: inset 0 0 0 150px rgba(255, 255, 255, 0) !important;
+  -webkit-box-shadow: inset 0 0 0 150px rgba(255, 255, 255, 0) !important;
+  -webkit-text-fill-color: currentColor !important;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  background-color: transparent;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+body {
+  background: var(--color-black);
+  position: relative;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 0.32rem;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 0.9rem;
+  padding: 0 0.32rem;
+  .flex-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    .logo-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    span {
+      display: flex;
+      &:last-child {
+        position: relative;
+        left: 0.13rem;
+      }
+    }
+  }
+  .header-menu {
+    display: flex;
+    align-items: center;
+    list-style-type: none;
+    &__item {
+      &:not(:last-child) {
+        margin-right: 0.37rem;
+      }
+      cursor: pointer;
+    }
+  }
+}
+
+.hero {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  .container {
+    display: flex;
+    align-items: center;
+  }
+  .hero-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: -1;
+  }
+  .title-block {
+    padding-left: 1.48rem;
+    position: relative;
+    .title-h1 {
+      text-transform: uppercase;
+      span {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+      }
+      u {
+        text-decoration: none;
+        overflow-x: hidden;
+        overflow-y: hidden;
+      }
+      .title-row {
+        display: flex;
+      }
+      .title-charts-cont {
+        display: flex;
+        overflow: hidden;
+      }
+      .title-row-2 {
+        padding-left: 0.83rem;
+      }
+      #ry {
+        margin-right: 0.37rem;
+      }
+      #tells {
+        margin-right: 0.15rem;
+      }
+      #a {
+        margin-right: 0.15rem;
+      }
+    }
+    .first-desc {
+      position: absolute;
+      top: -0.5rem;
+      right: 3.7rem;
+      overflow: hidden;
+      display: flex;
+    }
+    .second-desc {
+      position: absolute;
+      bottom: -1rem;
+      left: 4.85rem;
+      overflow: hidden;
+      display: flex;
+    }
+  }
+  .copyright {
+    position: absolute;
+    bottom: 0.32rem;
+    left: 0.32rem;
+    overflow: hidden;
+    display: flex;
+  }
+  .scroll-to {
+    position: absolute;
+    bottom: 0.32rem;
+    left: 7.75rem;
+    width: 1.48rem;
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    &__row {
+      overflow: hidden;
+      display: flex;
+    }
+  }
+  .book-btn {
+    position: absolute;
+    bottom: 0.32rem;
+    right: 0.32rem;
+    width: 1.7rem;
+    height: 1.7rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &__circle {
+      width: 1.7rem;
+      height: 1.7rem;
+      border: 1px solid var(--color-white);
+      border-radius: 100%;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .btn-text {
+      width: 1.28rem;
+      text-align: center;
+      overflow: hidden;
+      display: flex;
+    }
+  }
+}
+
+javascript
+
+gsap.registerPlugin(CustomEase);
+
+const customEaseIn = CustomEase.create('custom-ease-in', '0.52, 0.00, 0.48, 1.00');
+const fourtyFrames = 1.3333333;
+const fiftyFrames = 1.66666;
+const twoFrames = 0.666666;
+const fourFrames = 0.133333;
+const sixFrames = 0.2;
+
+const video = document.querySelector('.hero-video');
+const header = document.querySelector('.header');
+const book = document.querySelector('.first-desc span');
+const open = document.querySelector('.second-desc span');
+const copy = document.querySelector('.copyright span');
+const scrollToRows = document.querySelectorAll('.scroll-to .scroll-to__row span');
+const btnCircle = document.querySelector('.book-btn__circle');
+const btnText = document.querySelector('.btn-text span');
+const eve = document.querySelector('#eve span');
+const ry = document.querySelector('#ry span');
+const fo = document.querySelector('#fo span');
+const ssil = document.querySelector('#ssil span');
+const tells = document.querySelector('#tells span');
+const a = document.querySelector('#a span');
+const st = document.querySelector('#st span');
+const ory = document.querySelector('#ory span');
+
+const showElements = () => {
+  const timeline = gsap.timeline();
+  timeline
+        .fromTo(btnCircle, { autoAlpha: 0 }, { autoAlpha: 1, duration: fourtyFrames, ease: customEaseIn}, 0)
+        .fromTo(btnCircle, { scale: 0.417 }, { scale: 1, duration: fourtyFrames, ease: customEaseIn}, 0)
+        .fromTo(header, {y: '-0.5rem'}, {y: '0rem', duration: fourtyFrames, ease: customEaseIn}, 0)
+        .fromTo(eve, {x: '2.7rem'}, { x: '0rem', duration: fiftyFrames, ease: customEaseIn}, 0)
+        .fromTo(book, {y: '0.5rem'}, {y: '0rem', duration: fourtyFrames, ease: customEaseIn}, twoFrames)
+        .fromTo(fo, {x: '2.1rem'}, { x: '0rem', duration: fiftyFrames, ease: customEaseIn}, twoFrames)
+        .fromTo(a, {x: '-1.2rem'}, { x: '0rem', duration: fiftyFrames, ease: customEaseIn}, twoFrames)
+        .fromTo(ory, {x: '-3.2rem'}, { x: '0rem', duration: fiftyFrames, ease: customEaseIn}, twoFrames)
+        .fromTo(open, {y: '0.3rem'}, {y: '0rem', duration: fourtyFrames, ease: customEaseIn}, fourFrames)
+        .fromTo(btnText, {y: '0.4rem'}, {y: '0rem', duration: fourtyFrames, ease: customEaseIn}, fourFrames)
+        .fromTo(ry, {x: '-2rem'}, { x: '0rem', duration: fiftyFrames, ease: customEaseIn}, fourFrames)
+        .fromTo(ssil, {x: '-3.1rem'}, { x: '0rem', duration: fiftyFrames, ease: customEaseIn}, fourFrames)
+        .fromTo(tells, {x: '4.3rem'}, { x: '0rem', duration: fiftyFrames, ease: customEaseIn}, fourFrames)
+        .fromTo(st, {x: '1.9rem'}, { x: '0rem', duration: fiftyFrames, ease: customEaseIn}, fourFrames)
+        .fromTo(copy, {y: '0.4rem'}, {y: '0rem', duration: fourtyFrames, ease: customEaseIn}, sixFrames)
+        .fromTo(scrollToRows, {y: '0.5rem'}, {y: '0rem', duration: fourtyFrames, ease: customEaseIn}, sixFrames);
+
+  return timeline;
+}
+
+const hideElements = () => {
+  const timeline = gsap.timeline();
+
+  timeline
+        .fromTo(copy, {y: '0rem'}, {y: '0.4rem', duration: fourtyFrames, ease: customEaseIn}, 0)
+        .fromTo(scrollToRows, {y: '0rem'}, {y: '0.5rem', duration: fourtyFrames, ease: customEaseIn}, 0)
+        .fromTo(open, {y: '0rem'}, {y: '0.3rem', duration: fourtyFrames, ease: customEaseIn}, twoFrames)
+        .fromTo(btnText, {y: '0rem'}, {y: '0.4rem', duration: fourtyFrames, ease: customEaseIn}, twoFrames)
+        .fromTo(ry, {x: '0rem'}, { x: '-2rem', duration: fiftyFrames, ease: customEaseIn}, twoFrames)
+        .fromTo(ssil, {x: '0rem'}, { x: '-3.1rem', duration: fiftyFrames, ease: customEaseIn}, twoFrames)
+        .fromTo(tells, {x: '0rem'}, { x: '4.3rem', duration: fiftyFrames, ease: customEaseIn}, twoFrames)
+        .fromTo(st, {x: '0rem'}, { x: '1.9rem', duration: fiftyFrames, ease: customEaseIn}, twoFrames)
+        .fromTo(book, {y: '0rem'}, {y: '0.5rem', duration: fourtyFrames, ease: customEaseIn}, fourFrames)
+        .fromTo(fo, {x: '0rem'}, { x: '2.1rem', duration: fiftyFrames, ease: customEaseIn}, fourFrames)
+        .fromTo(a, {x: '0rem'}, { x: '-1.2rem', duration: fiftyFrames, ease: customEaseIn}, fourFrames)
+        .fromTo(ory, {x: '0rem'}, { x: '-3.2rem', duration: fiftyFrames, ease: customEaseIn}, fourFrames)
+        .fromTo(btnCircle, { autoAlpha: 1 }, { autoAlpha: 0, duration: fourtyFrames, ease: customEaseIn}, sixFrames)
+        .fromTo(btnCircle, { scale: 1 }, { scale: 0.417, duration: fourtyFrames, ease: customEaseIn}, sixFrames)
+        .fromTo(header, {y: '0rem'}, {y: '-100%', duration: fourtyFrames, ease: customEaseIn}, sixFrames)
+        .fromTo(eve, {x: '0rem'}, { x: '2.7rem', duration: fiftyFrames, ease: customEaseIn}, sixFrames);
+
+  return timeline;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  showElements();
+});
+
+Смена темы
+
+html
+<label class="switch">
+	<input class="switch__input" type="checkbox" role="switch">
+	<svg class="switch__icon switch__icon--light" viewBox="0 0 12 12" width="12px" height="12px" aria-hidden="true">
+		<g fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round">
+			<circle cx="6" cy="6" r="2" />
+			<g stroke-dasharray="1.5 1.5">
+				<polyline points="6 10,6 11.5" transform="rotate(0,6,6)" />
+				<polyline points="6 10,6 11.5" transform="rotate(45,6,6)" />
+				<polyline points="6 10,6 11.5" transform="rotate(90,6,6)" />
+				<polyline points="6 10,6 11.5" transform="rotate(135,6,6)" />
+				<polyline points="6 10,6 11.5" transform="rotate(180,6,6)" />
+				<polyline points="6 10,6 11.5" transform="rotate(225,6,6)" />
+				<polyline points="6 10,6 11.5" transform="rotate(270,6,6)" />
+				<polyline points="6 10,6 11.5" transform="rotate(315,6,6)" />
+			</g>
+		</g>
+	</svg>
+	<svg class="switch__icon switch__icon--dark" viewBox="0 0 12 12" width="12px" height="12px" aria-hidden="true">
+		<g fill="none" stroke="#fff" stroke-width="1" stroke-linejoin="round" transform="rotate(-45,6,6)">
+			<path d="m9,10c-2.209,0-4-1.791-4-4s1.791-4,4-4c.304,0,.598.041.883.105-.995-.992-2.367-1.605-3.883-1.605C2.962.5.5,2.962.5,6s2.462,5.5,5.5,5.5c1.516,0,2.888-.613,3.883-1.605-.285.064-.578.105-.883.105Z"/>
+		</g>
+	</svg>
+	<span class="switch__sr">Dark Mode</span>
+</label>
+
+css
+
+* {
+	border: 0;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+:root {
+	--hue: 223;
+	--bg: hsl(var(--hue),10%,90%);
+	--fg: hsl(var(--hue),10%,10%);
+	--primary: hsl(var(--hue),90%,50%);
+	--trans-dur: 0.3s;
+	--trans-timing: cubic-bezier(0.76,0.05,0.24,0.95);
+	--trans-timing-in: cubic-bezier(0.76,0.05,0.86,0.06);
+	--trans-timing-out: cubic-bezier(0.05,0.76,0.06,0.86);
+	font-size: calc(40px + (80 - 40) * (100vw - 320px) / (2560 - 320));
+}
+body,
+input {
+	color: var(--fg);
+	font: 1em/1.5 sans-serif;
+}
+body {
+	background-color: var(--bg);
+	display: flex;
+	height: 100vh;
+	transition:
+		background-color var(--trans-dur),
+		color var(--trans-dur);
+}
+body:has(.switch__input:checked) {
+	background-color: var(--fg);
+	color: var(--bg);
+}
+.switch {
+	margin: auto;
+	position: relative;
+}
+.switch__icon,
+.switch__input {
+	display: block;
+}
+.switch__icon {
+	position: absolute;
+	top: 0.375em;
+	right: 0.375em;
+	width: 0.75em;
+	height: 0.75em;
+	transition:
+		opacity calc(var(--trans-dur) / 2),
+		transform calc(var(--trans-dur) / 2);
+}
+.switch__icon polyline {
+	transition: stroke-dashoffset calc(var(--trans-dur) / 2);
+}
+.switch__icon--light,
+.switch__icon--light polyline {
+	transition-delay: calc(var(--trans-dur) / 2);
+	transition-timing-function: var(--trans-timing-out);
+}
+.switch__icon--dark {
+	opacity: 0;
+	transform: translateX(-0.75em) rotate(30deg) scale(0.75);
+	transition-timing-function: var(--trans-timing-in);
+}
+.switch__input {
+	background-color: hsl(210,90%,70%);
+	border-radius: 0.75em;
+	box-shadow:
+		0 0 0 0.125em hsla(var(--hue),90%,50%,0),
+		0.125em 0.125em 0.25em hsla(var(--hue),90%,10%,0.2);
+	outline: transparent;
+	position: relative;
+	width: 3em;
+	height: 1.5em;
+	-webkit-appearance: none;
+	appearance: none;
+	-webkit-tap-highlight-color: transparent;
+	transition:
+		background-color var(--trans-dur) var(--trans-timing),
+		box-shadow 0.15s linear;
+}
+.switch__input:focus-visible {
+	box-shadow:
+		0 0 0 0.125em hsl(var(--hue),90%,50%),
+		0.125em 0.125em 0.25em hsla(var(--hue),90%,10%,0.2);
+}
+.switch__input:before,
+.switch__input:after {
+	content: "";
+	display: block;
+	position: absolute;
+}
+.switch__input:before {
+	background-color: hsl(50,90%,50%);
+	border-radius: inherit;
+	mask-image: linear-gradient(120deg,hsl(0,0%,0%) 20%,hsla(0,0%,0%,0) 80%);
+	-webkit-mask-image: linear-gradient(120deg,hsl(0,0%,0%) 20%,hsla(0,0%,0%,0) 80%);
+	inset: 0;
+	transition: background-color var(--trans-dur) var(--trans-timing);
+}
+.switch__input:after {
+	background-color: hsl(0,0%,100%);
+	border-radius: 50%;
+	box-shadow: 0.05em 0.05em 0.05em hsla(var(--hue),90%,10%,0.1);
+	top: 0.125em;
+	left: 0.125em;
+	width: 1.25em;
+	height: 1.25em;
+	transition:
+		background-color var(--trans-dur) var(--trans-timing),
+		transform var(--trans-dur) var(--trans-timing);
+	z-index: 1;
+}
+.switch__input:checked {
+	background-color: hsl(290,90%,40%);
+}
+.switch__input:checked:before {
+	background-color: hsl(220,90%,40%);
+}
+.switch__input:checked:after {
+	background-color: hsl(0,0%,0%);
+	transform: translateX(1.5em);
+}
+.switch__input:checked ~ .switch__icon--light,
+.switch__input:checked ~ .switch__icon--light polyline {
+	transition-delay: 0s;
+	transition-timing-function: var(--trans-timing-in);
+}
+.switch__input:checked ~ .switch__icon--light {
+	opacity: 0;
+	transform: translateX(-0.75em) rotate(-30deg) scale(0.75);
+}
+.switch__input:checked ~ .switch__icon--light polyline {
+	stroke-dashoffset: 1.5;
+}
+.switch__input:checked ~ .switch__icon--dark {
+	opacity: 1;
+	transform: translateX(-1.5em);
+	transition-delay: calc(var(--trans-dur) / 2);
+	transition-timing-function: var(--trans-timing-out);
+}
+.switch__sr {
+	overflow: hidden;
+	position: absolute;
+	width: 1px;
+	height: 1px;
+}
+
+
+javascript нет// Нет JavaScript кода для этой части
+
+login form, с рыбкой анимацией
+
+html
+
+<div class="container">
+    <div class="card">
+        <h1 class="card_title">Login to your account</h1>
+        <p class="card_title-info">Pen By Anna Batura</p>
+        <form class="card_form">
+            <div class="input">
+                <input type="text" class="input_field" required />
+                <label class="input_label">Full name</label>
+            </div>
+            <div class="input">
+                <input type="text" class="input_field" required />
+                <label class="input_label">Email</label>
+            </div>
+            <div class="input">
+                <input type="password" class="input_field" required />
+                <label class="input_label">Password</label>
+                <span class="input_eye">
+
+                    <svg viewBox="0 0 146 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M143 37C143 45.4902 136.139 53.9606 123.263 60.487C110.554 66.9283 92.7879 71 73 71C53.2121 71 35.446 66.9283 22.7375 60.487C9.86096 53.9606 3 45.4902 3 37C3 28.5098 9.86096 20.0394 22.7375 13.513C35.446 7.07167 53.2121 3 73 3C92.7879 3 110.554 7.07167 123.263 13.513C136.139 20.0394 143 28.5098 143 37Z" stroke-width="6" />
+                        <circle cx="73" cy="37" r="34" stroke-width="6" />
+                    </svg>
+                </span>
+            </div>
+            <button class="card_button">Get started</button>
+        </form>
+        <div class="card_info">
+            <p>Not registered? <a href="#">Create an account</a></p>
+        </div>
+    </div>
+    <div class="fish-shadow-con">
+        <svg class="fish-shadow" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMin slice" viewBox="0 0 743 645">
+
+
+
+            <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="square">
+                <path d="M177.367 337.568L182.709 357.739C198.517 417.421 249.748 460.995 311.193 467.019L421.508 477.834C478.237 483.396 532.831 454.649 560.346 404.729C607.09 319.923 557.549 214.182 462.47 195.822L375.079 178.946C368.369 177.651 361.766 175.854 355.324 173.572C251.651 136.837 149.205 231.245 177.367 337.568Z" class="line" id="Line" />
+
+                <g xmlns="http://www.w3.org/2000/svg" id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g id="Group" transform="translate(-103.000000, 3.000000)" fill="#F2AFAF">
+                        <g id="l-1" transform="translate(118.396084, 37.985234) rotate(-89.000000) translate(-118.396084, -37.985234) translate(104.396084, 23.985234)">
+                            <path d="M14.1723611,27.5145257 C19.9713509,27.5145257 24.6723611,22.8135155 24.6723611,17.0145257 C24.6723611,15.8258883 28.1981217,2.09701504 27.8341336,1.03166708 C26.4223375,-3.10048431 18.7827136,6.51452565 14.1723611,6.51452565 C9.87015746,6.51452565 1.67467528,-2.67194974 0.0523652038,1.03166708 C-0.512055182,2.32019808 3.67236107,15.5177394 3.67236107,17.0145257 C3.67236107,22.8135155 8.3733712,27.5145257 14.1723611,27.5145257 Z" />
+                        </g>
+                    </g>
+                    <animateMotion dur="6s" begin="0s" repeatCount="indefinite" rotate="auto" fill="freeze"        >
+                        <mpath xlink:href="#Line" />
+                    </animateMotion>
+                </g>
+
+                <g xmlns="http://www.w3.org/2000/svg" id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g id="Group" transform="translate(-71.000000, 3.000000)">
+                        <g id="l-2" transform="translate(96.916890, 37.437926) rotate(-89.000000) translate(-96.916890, -37.437926) translate(60.416890, 13.437926)">
+                            <ellipse id="Oval" cx="36.5" cy="24" rx="16.5" ry="24" />
+                            <path d="M52.8409492,28.4193415 C56.9830848,28.4193415 67.8409492,23.8671728 67.8409492,17.7920406 C67.8409492,16.3338966 72.7364131,8.06546148 72.3851131,6.79204055 C71.2727759,2.75994931 63.4888957,6.79204055 60.3409492,6.79204055 C56.1988135,6.79204055 52.8409492,11.7169083 52.8409492,17.7920406 C52.8409492,23.8671728 48.6988135,28.4193415 52.8409492,28.4193415 Z" id="Oval" />
+                            <path d="M1.84094917,28.4193415 C5.98308479,28.4193415 16.8409492,23.8671728 16.8409492,17.7920406 C16.8409492,16.3338966 21.7364131,8.06546148 21.3851131,6.79204055 C20.2727759,2.75994931 12.4888957,6.79204055 9.34094917,6.79204055 C5.19881354,6.79204055 1.84094917,11.7169083 1.84094917,17.7920406 C1.84094917,23.8671728 -2.30118646,28.4193415 1.84094917,28.4193415 Z" id="Oval" transform="translate(10.701577, 16.709671) scale(-1, 1) translate(-10.701577, -16.709671) " />
+                        </g>
+                    </g>
+                    <animateMotion dur="6s" begin="0.1s" repeatCount="indefinite" rotate="auto" fill="freeze"        >
+                        <mpath xlink:href="#Line" />
+                    </animateMotion>
+                </g>
+
+                <g xmlns="http://www.w3.org/2000/svg" id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g id="Group" transform="translate(-58.000000, 3.000000)" fill="#D8D8D8">
+                        <g id="l-3-" transform="translate(83.924588, 36.883456) rotate(-89.000000) translate(-83.924588, -36.883456) translate(69.424588, 12.883456)">
+                            <path d="M14.1723611,48 C19.4148996,48 23.903645,41.8034457 25.7601702,33.016917 C26.3483828,30.2330353 28.8341336,32.1407168 28.8341336,28.9515567 C28.8341336,15.6967227 21.0759204,1.42108547e-14 14.1723611,1.42108547e-14 C7.2688017,1.42108547e-14 3.55271368e-15,13.745166 3.55271368e-15,27 C3.55271368e-15,29.9816317 1.95554677,29.8362716 2.47309478,32.4701788 C4.25630479,41.5452976 8.82173488,48 14.1723611,48 Z" id="l-3" />
+                        </g>
+                    </g>
+                    <animateMotion dur="6s" begin="0.2s" repeatCount="indefinite" rotate="auto" fill="freeze"        >
+                        <mpath xlink:href="#Line" />
+                    </animateMotion>
+                </g>
+
+                <g xmlns="http://www.w3.org/2000/svg" id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g id="Group" transform="translate(-48.000000, 3.000000)" fill="#D8D8D8">
+                        <g id="l-4-" transform="translate(73.917498, 37.202362) rotate(-89.000000) translate(-73.917498, -37.202362) translate(61.417498, 13.202362)">
+                            <path d="M12.2878333,48 C16.8332608,48 20.7251285,41.8034457 22.3347878,33.016917 C22.8447845,30.2330353 25,32.1407168 25,28.9515567 C25,15.6967227 18.2734123,1.42108547e-14 12.2878333,1.42108547e-14 C6.30225431,1.42108547e-14 0,13.745166 0,27 C0,29.9816317 1.69551372,29.8362716 2.14424232,32.4701788 C3.69033525,41.5452976 7.64869079,48 12.2878333,48 Z" id="l-4" />
+                        </g>
+                    </g>
+                    <animateMotion dur="6s" begin="0.3s" repeatCount="indefinite" rotate="auto" fill="freeze"        >
+                        <mpath xlink:href="#Line" />
+                    </animateMotion>
+                </g>
+
+                <g xmlns="http://www.w3.org/2000/svg" id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g id="Group" transform="translate(-32.000000, 3.000000)" fill="#D8D8D8">
+                        <g id="l-5-" transform="translate(58.922677, 36.774735) rotate(-89.000000) translate(-58.922677, -36.774735) translate(49.422677, 12.774735)">
+                            <path d="M9.33875331,48 C12.7932782,48 15.7510977,41.8034457 16.9744387,33.016917 C17.3620362,30.2330353 19,32.1407168 19,28.9515567 C19,15.6967227 13.8877933,1.42108547e-14 9.33875331,1.42108547e-14 C4.78971327,1.42108547e-14 0,13.745166 0,27 C0,29.9816317 1.28859043,29.8362716 1.62962417,32.4701788 C2.80465479,41.5452976 5.813005,48 9.33875331,48 Z" id="l-4" />
+                        </g>
+                    </g>
+                    <animateMotion dur="6s" begin="0.4s" repeatCount="indefinite" rotate="auto" fill="freeze"        >
+                        <mpath xlink:href="#Line" />
+                    </animateMotion>
+                </g>
+
+                <g xmlns="http://www.w3.org/2000/svg" id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g id="Group" transform="translate(-1.000000, -2.000000)" fill="#D8D8D8">
+                        <g id="l-6" transform="translate(23.080623, 42.228667) rotate(-89.000000) translate(-23.080623, -42.228667) translate(-17.919377, 20.728667)">
+                            <path d="M41.7607406,42.4419194 C43.7607286,42.4419194 43.2381119,38.329711 43.2310921,38.0763828 C43.1415394,34.8446384 44.2788431,34.4419194 41.6451883,34.4419194 C39.0115336,34.4419194 39.7260112,34.2957436 39.8222402,37.76842 C39.82926,38.0217482 39.7195178,42.4419194 41.7607406,42.4419194 Z" id="Oval" />
+                            <path d="M23.6342467,37.7478622 C27.3113017,37.7478622 36.9500408,30.5559331 36.9500408,20.9578882 C36.9500408,18.65418 41.2958401,5.59095627 40.9839843,3.57909038 C39.9965407,-2.7911731 32.569021,0.0196920288 29.4031545,6.69804407 C26.912494,11.9520586 23.6342467,11.3598432 23.6342467,20.9578882 C23.6342467,30.5559331 19.9571917,37.7478622 23.6342467,37.7478622 Z" id="Oval" transform="translate(31.500000, 18.873931) scale(-1, 1) translate(-31.500000, -18.873931) " />
+                            <path d="M43.2310921,38.0763828 C46.9081472,38.0763828 56.5468863,30.8844538 56.5468863,21.2864088 C56.5468863,18.9827007 60.8926856,5.91947694 60.5808297,3.90761104 C59.5933862,-2.46265244 52.1658664,0.348212694 49,7.02656473 C46.5093394,12.2805793 43.2310921,11.6883638 43.2310921,21.2864088 C43.2310921,30.8844538 39.5540371,38.0763828 43.2310921,38.0763828 Z" id="Oval" />
+                            <rect id="Rectangle" fill-opacity="0" x="0.186684949" y="18.7699638" width="81" height="9" />
+                        </g>
+                    </g>
+                    <animateMotion dur="6s" begin="0.5s" repeatCount="indefinite" rotate="auto" fill="freeze"        >
+                        <mpath xlink:href="#Line" />
+                    </animateMotion>
+                </g>
+
+        </svg>
+    </div>
+    <svg class="fish" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMin slice" viewBox="0 0 743 645">
+
+        <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="square">
+            <path d="M177.367 337.568L182.709 357.739C198.517 417.421 249.748 460.995 311.193 467.019L421.508 477.834C478.237 483.396 532.831 454.649 560.346 404.729C607.09 319.923 557.549 214.182 462.47 195.822L375.079 178.946C368.369 177.651 361.766 175.854 355.324 173.572C251.651 136.837 149.205 231.245 177.367 337.568Z" class="line" id="Line" />
+
+            <g xmlns="http://www.w3.org/2000/svg" id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="Group" transform="translate(-103.000000, 3.000000)" fill="#F2AFAF">
+                    <g id="l-1" transform="translate(118.396084, 37.985234) rotate(-89.000000) translate(-118.396084, -37.985234) translate(104.396084, 23.985234)">
+                        <path d="M14.1723611,27.5145257 C19.9713509,27.5145257 24.6723611,22.8135155 24.6723611,17.0145257 C24.6723611,15.8258883 28.1981217,2.09701504 27.8341336,1.03166708 C26.4223375,-3.10048431 18.7827136,6.51452565 14.1723611,6.51452565 C9.87015746,6.51452565 1.67467528,-2.67194974 0.0523652038,1.03166708 C-0.512055182,2.32019808 3.67236107,15.5177394 3.67236107,17.0145257 C3.67236107,22.8135155 8.3733712,27.5145257 14.1723611,27.5145257 Z" />
+                    </g>
+                </g>
+                <animateMotion dur="6s" begin="0s" repeatCount="indefinite" rotate="auto" fill="freeze"        >
+                    <mpath xlink:href="#Line" />
+                </animateMotion>
+            </g>
+
+            <g xmlns="http://www.w3.org/2000/svg" id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="Group" transform="translate(-71.000000, 3.000000)" fill="#ff5050">
+                    <g id="l-2" transform="translate(96.916890, 37.437926) rotate(-89.000000) translate(-96.916890, -37.437926) translate(60.416890, 13.437926)">
+                        <ellipse id="Oval" cx="36.5" cy="24" rx="16.5" ry="24" />
+                        <path d="M52.8409492,28.4193415 C56.9830848,28.4193415 67.8409492,23.8671728 67.8409492,17.7920406 C67.8409492,16.3338966 72.7364131,8.06546148 72.3851131,6.79204055 C71.2727759,2.75994931 63.4888957,6.79204055 60.3409492,6.79204055 C56.1988135,6.79204055 52.8409492,11.7169083 52.8409492,17.7920406 C52.8409492,23.8671728 48.6988135,28.4193415 52.8409492,28.4193415 Z" id="Oval" />
+                        <path d="M1.84094917,28.4193415 C5.98308479,28.4193415 16.8409492,23.8671728 16.8409492,17.7920406 C16.8409492,16.3338966 21.7364131,8.06546148 21.3851131,6.79204055 C20.2727759,2.75994931 12.4888957,6.79204055 9.34094917,6.79204055 C5.19881354,6.79204055 1.84094917,11.7169083 1.84094917,17.7920406 C1.84094917,23.8671728 -2.30118646,28.4193415 1.84094917,28.4193415 Z" id="Oval" transform="translate(10.701577, 16.709671) scale(-1, 1) translate(-10.701577, -16.709671) " />
+                    </g>
+                </g>
+                <animateMotion dur="6s" begin="0.1s" repeatCount="indefinite" rotate="auto" fill="freeze"        >
+                    <mpath xlink:href="#Line" />
+                </animateMotion>
+            </g>
+
+            <g xmlns="http://www.w3.org/2000/svg" id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="Group" transform="translate(-58.000000, 3.000000)" fill="#D8D8D8">
+                    <g id="l-3-" transform="translate(83.924588, 36.883456) rotate(-89.000000) translate(-83.924588, -36.883456) translate(69.424588, 12.883456)">
+                        <path d="M14.1723611,48 C19.4148996,48 23.903645,41.8034457 25.7601702,33.016917 C26.3483828,30.2330353 28.8341336,32.1407168 28.8341336,28.9515567 C28.8341336,15.6967227 21.0759204,1.42108547e-14 14.1723611,1.42108547e-14 C7.2688017,1.42108547e-14 3.55271368e-15,13.745166 3.55271368e-15,27 C3.55271368e-15,29.9816317 1.95554677,29.8362716 2.47309478,32.4701788 C4.25630479,41.5452976 8.82173488,48 14.1723611,48 Z" id="l-3" />
+                    </g>
+                </g>
+                <animateMotion dur="6s" begin="0.2s" repeatCount="indefinite" rotate="auto" fill="freeze"        >
+                    <mpath xlink:href="#Line" />
+                </animateMotion>
+            </g>
+
+            <g xmlns="http://www.w3.org/2000/svg" id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="Group" transform="translate(-48.000000, 3.000000)" fill="#D8D8D8">
+                    <g id="l-4-" transform="translate(73.917498, 37.202362) rotate(-89.000000) translate(-73.917498, -37.202362) translate(61.417498, 13.202362)">
+                        <path d="M12.2878333,48 C16.8332608,48 20.7251285,41.8034457 22.3347878,33.016917 C22.8447845,30.2330353 25,32.1407168 25,28.9515567 C25,15.6967227 18.2734123,1.42108547e-14 12.2878333,1.42108547e-14 C6.30225431,1.42108547e-14 0,13.745166 0,27 C0,29.9816317 1.69551372,29.8362716 2.14424232,32.4701788 C3.69033525,41.5452976 7.64869079,48 12.2878333,48 Z" id="l-4" />
+                    </g>
+                </g>
+                <animateMotion dur="6s" begin="0.3s" repeatCount="indefinite" rotate="auto" fill="freeze"        >
+                    <mpath xlink:href="#Line" />
+                </animateMotion>
+            </g>
+
+            <g xmlns="http://www.w3.org/2000/svg" id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="Group" transform="translate(-32.000000, 3.000000)" fill="#D8D8D8">
+                    <g id="l-5-" transform="translate(58.922677, 36.774735) rotate(-89.000000) translate(-58.922677, -36.774735) translate(49.422677, 12.774735)">
+                        <path d="M9.33875331,48 C12.7932782,48 15.7510977,41.8034457 16.9744387,33.016917 C17.3620362,30.2330353 19,32.1407168 19,28.9515567 C19,15.6967227 13.8877933,1.42108547e-14 9.33875331,1.42108547e-14 C4.78971327,1.42108547e-14 0,13.745166 0,27 C0,29.9816317 1.28859043,29.8362716 1.62962417,32.4701788 C2.80465479,41.5452976 5.813005,48 9.33875331,48 Z" id="l-4" />
+                    </g>
+                </g>
+                <animateMotion dur="6s" begin="0.4s" repeatCount="indefinite" rotate="auto" fill="freeze"        >
+                    <mpath xlink:href="#Line" />
+                </animateMotion>
+            </g>
+
+            <g xmlns="http://www.w3.org/2000/svg" id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="Group" transform="translate(-1.000000, -2.000000)" fill="#D8D8D8">
+                    <g id="l-6" transform="translate(23.080623, 42.228667) rotate(-89.000000) translate(-23.080623, -42.228667) translate(-17.919377, 20.728667)">
+                        <path d="M41.7607406,42.4419194 C43.7607286,42.4419194 43.2381119,38.329711 43.2310921,38.0763828 C43.1415394,34.8446384 44.2788431,34.4419194 41.6451883,34.4419194 C39.0115336,34.4419194 39.7260112,34.2957436 39.8222402,37.76842 C39.82926,38.0217482 39.7195178,42.4419194 41.7607406,42.4419194 Z" id="Oval" />
+                        <path d="M23.6342467,37.7478622 C27.3113017,37.7478622 36.9500408,30.5559331 36.9500408,20.9578882 C36.9500408,18.65418 41.2958401,5.59095627 40.9839843,3.57909038 C39.9965407,-2.7911731 32.569021,0.0196920288 29.4031545,6.69804407 C26.912494,11.9520586 23.6342467,11.3598432 23.6342467,20.9578882 C23.6342467,30.5559331 19.9571917,37.7478622 23.6342467,37.7478622 Z" id="Oval" transform="translate(31.500000, 18.873931) scale(-1, 1) translate(-31.500000, -18.873931) " />
+                        <path d="M43.2310921,38.0763828 C46.9081472,38.0763828 56.5468863,30.8844538 56.5468863,21.2864088 C56.5468863,18.9827007 60.8926856,5.91947694 60.5808297,3.90761104 C59.5933862,-2.46265244 52.1658664,0.348212694 49,7.02656473 C46.5093394,12.2805793 43.2310921,11.6883638 43.2310921,21.2864088 C43.2310921,30.8844538 39.5540371,38.0763828 43.2310921,38.0763828 Z" id="Oval" />
+                        <rect id="Rectangle" fill-opacity="0" x="0.186684949" y="18.7699638" width="81" height="9" />
+                    </g>
+                </g>
+                <animateMotion dur="6s" begin="0.5s" repeatCount="indefinite" rotate="auto" fill="freeze">
+                    <mpath xlink:href="#Line" />
+                </animateMotion>
+            </g>
+
+    </svg>
+
+</div>
+<a class="link" href="https://codepen.io/Anna_Batura/" target="_blank"><svg class="rabbit" version="1.2" viewBox="0 0 600 600">
+        <path d="m 335.94313,30.576451 c -9.79312,-0.146115 -17.39091,4.439466 -17.39091,13.789758 0,11.508038 -2.91019,60.415461 1.40532,76.238951 4.31553,15.82355 21.58583,38.97215 34.51834,54.67597 10.06946,12.22726 4.34772,41.69626 4.34772,56.0813 0,14.38499 -2.89751,25.9107 -8.65153,25.9107 -5.75402,0 -14.35971,5.75217 -20.11373,11.50612 -5.75395,5.75402 -11.51588,12.95631 -18.70841,7.20229 -7.19251,-5.75402 -20.15388,-11.49441 -43.16987,-15.80992 -23.01609,-4.31551 -61.84129,-0.0234 -86.29583,8.60763 -24.45458,8.63104 -76.25857,56.11061 -90.643535,77.6882 -14.385056,21.5775 -15.799189,87.73247 -14.36068,97.80193 1.438509,10.06953 -2.908267,17.28255 -10.100778,8.65153 -7.192459,-8.63104 -12.911438,-4.30381 -12.911438,-4.30381 0,0 -7.202292,14.37045 -7.202292,21.56298 0,7.19244 2.854564,14.36068 2.854564,14.36068 0,0 -11.506099,8.65056 -11.506099,14.40458 0,5.75397 11.515881,15.83044 18.708391,24.46146 7.192546,8.63097 31.651182,25.89997 41.720624,24.46148 10.069543,-1.43851 28.775063,-0.0121 35.967573,4.3038 7.19253,4.31551 24.44687,10.06761 46.02443,11.5061 21.57752,1.43851 81.97845,5.75307 97.80193,5.75307 15.82357,0 20.1675,-2.86435 27.35996,-10.05688 7.19253,-7.19245 -5.78527,-15.84115 -10.10079,-25.9107 -4.31551,-10.06946 14.40363,-7.16912 20.15765,-8.60763 5.75402,-1.43849 21.59424,-11.5061 31.66376,-11.5061 10.06953,0 8.6165,10.05589 21.56298,15.80993 12.94654,5.75393 31.63939,24.43902 46.02443,27.31602 14.38497,2.87695 47.47173,0.0121 58.97979,-4.30381 11.50797,-4.31551 10.06946,-14.37044 0,-21.56297 -10.06955,-7.19244 -34.50663,-20.16742 -38.82214,-27.35994 -4.31551,-7.19246 -5.74329,-15.81969 1.44924,-23.01224 7.19251,-7.19252 14.35876,-4.30292 25.86678,-10.05685 11.50806,-5.75402 15.80992,-23.04354 15.80992,-33.11301 0,-10.06953 1.36928,-21.01352 5.75307,-27.31602 3.67345,-5.28128 5.10015,-22.13212 5.30499,-33.64009 0.21874,-12.28864 -5.29329,-15.24871 -9.60881,-22.44122 -4.31543,-7.19246 4.30285,-17.25917 10.05687,-17.25917 5.75402,0 31.65108,-4.33602 41.72062,-8.65153 10.06946,-4.31546 20.16744,-23.03273 27.35995,-31.66377 7.19246,-8.63095 1.41799,-27.31512 -8.65154,-33.06907 -10.06954,-5.75402 -10.07746,-21.59431 -18.70841,-31.66377 -8.63103,-10.06953 -18.68507,-31.62961 -27.31604,-38.82213 -8.63101,-7.19253 -28.77502,-12.95535 -35.96755,-12.95535 -7.19253,0 -11.50612,9e-4 -11.50612,-5.75306 0,-5.75402 -1.44924,-12.9203 -1.44924,-25.86678 0,-12.94655 -16.24344,-68.464566 -37.3729,-102.149659 -4.40799,-7.027282 -11.5581,-5.405316 -20.15765,-2.898485 -5.69412,1.659863 -8.60761,4.35564 -8.60761,23.056136 0,18.700566 -11.50515,-0.03133 -17.25917,-10.100794 -5.75403,-10.069512 -15.86265,-21.58444 -28.80918,-24.461458 -2.42749,-0.539415 -4.76669,-0.800692 -7.02665,-0.834399 z" id="rabbit"></path>
+
+        <defs>
+            <filter id="goo">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+                <feBlend in="SourceGraphic" in2="goo" />
+            </filter>
+        </defs>
+
+    </svg></a> </div>
+
+сss
+@import url(https://fonts.googleapis.com/css?family=Oswald|Roboto)
+@import "compass/css3"
+
+=keyframes($animation-name)
+  @-webkit-keyframes #{$animation-name}
+    @content
+
+  @-moz-keyframes #{$animation-name}
+    @content
+
+  @keyframes
+
+$color: rgba(255, 80, 80, 1)
+$colorSecondary: #ff6100
+
++keyframes (btn)
+  0%, 100%
+    @include transform(scale(1))
+  70%
+    @include transform(scale(1))
+  80%
+    @include transform(scale(1.04))
+  90%
+    @include transform(scale(0.96))
+
++keyframes (fish)
+  0%, 70%
+    opacity: 0
+  100%
+    opacity: 1
+
+html
+  height: 100%
+body
+  font-family: Roboto, sans-serif
+  color: #515a6e
+  background-color: #d5eafc
+  height: 100%
+  margin: 0
+  overflow: hidden
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
+  display: -webkit-box
+  display: -ms-flexbox
+  display: flex
+  -webkit-box-align: center
+  -ms-flex-align: center
+  align-items: center
+  -webkit-box-pack: center
+  -ms-flex-pack: center
+  justify-content: center
+a
+  cursor: pointer
+  color: #000
+  text-decoration: none
+  @include transition(all 0.3s)
+  &:hover
+    color: $color
+.fish, .fish-shadow
+  width: 640px
+  height: auto
+  position: absolute
+  top: -145px
+  left: -177px
+  @include animation(fish 3s forwards ease-in-out)
+  path
+    fill: #fff
+    &:hover
+      fill: $colorSecondary
+  .line
+    fill: none
+.fish-shadow-con
+  opacity: 0.2
+  filter: blur(10px)
+  position: absolute
+  top: 0
+  left: 0
+.fish-shadow
+  top: -125px
+  left: -157px
+  path
+    fill: #211922
+    &:hover
+      fill: #211922
+.fish-shadow
+  -webkit-filter: url("#goo")
+  filter: url(#goo)
+  top: -125px
+  left: -157px
+  opacity: 0.4
+  //path
+    fill: rgba(0, 0, 0, 0.2)
+    &:hover
+      fill: rgba(0, 0, 0, 0.2)
+.container
+  position: relative
+  background-color: #fafafe
+  border-radius: 10px
+  margin: 40px
+  padding: 25px 20px 10px
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2)
+  width: 320px
+  box-sizing: border-box
+  &:before
+    content: ""
+    position: absolute
+    left: 0
+    bottom: 0
+    right: 0
+    height: 60%
+    background-color: #fafafe
+    border-radius: 10px
+    z-index: 2
+.card
+  position: relative
+  z-index: 2
+.card_title
+  font-size: 24px
+  margin: 0
+.card_title-info
+  font-size: 14px
+  margin: 7px 0 10px
+.card_button
+  border-radius: 4px
+  border: none
+  outline: none
+  width: 100%
+  padding: 0 15px
+  font-size: 18px
+  line-height: 36px
+  font-weight: 500
+  margin: 25px 0 10px
+  color: #fff
+  background: linear-gradient($colorSecondary, $color)
+  box-shadow: 0 2px 12px -3px $color
+  @include animation(btn 6.0s 3s infinite ease-in-out)
+  opacity: 0.9
+  @include transition(all 0.3s)
+  &:hover
+    opacity: 1
+    box-shadow: 0 2px 2px -3px $color
+
+.card_info
+  font-size: 14px
+
+.input
+  display: flex
+  flex-direction: column-reverse
+  position: relative
+  padding-top: 10px
+  & + .input
+    margin-top: 10px
+
+.input_label
+  color: #8597a3
+  position: absolute
+  top: 20px
+  @include transition(all 0.3s)
+
+.input_field
+  border: 0
+  padding: 0
+  z-index: 1
+  background-color: transparent
+  border-bottom: 2px solid #eee
+  font: inherit
+  font-size: 14px
+  line-height: 30px
+  &:focus, &:valid
+    outline: 0
+    border-bottom-color: #665856
+    &+.input_label
+      color: #665856
+      @include transform(translateY(-25px))
+.input_eye
+  position: absolute
+  bottom: 0
+  right: 0
+  width: 36px
+  height: 30px
+  display: -webkit-box
+  display: -ms-flexbox
+  display: flex
+  -webkit-box-align: center
+  -ms-flex-align: center
+  align-items: center
+  -webkit-box-pack: center
+  -ms-flex-pack: center
+  justify-content: center
+  svg
+    width: 24px
+    height: auto
+    stroke: #8597a3
+
+.link
+  position: absolute
+  bottom: 20px
+  right: 20px
+  z-index: 3
+
+.rabbit
+  width: 50px
+  height: 50px
+  fill: #fff
+
+
+javascript // no js yet
+
+
+fluid cursor ( надо его переделать более спокойным для сайта менто)
+
+html
+
+<section id='container'>
+  <h1 class='a-title'>Move the mouse</h1>
+  <h2 class='a-second-title'>See the magic</h2>
+  <canvas></canvas>
+</section>
+
+css
+
+dy {
+  overflow: hidden;
+}
+
+body {html,
+bo
+  margin: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+#container {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.a-title {
+  position: absolute;
+  color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: conic-gradient(#ed0101, blue);
+  pointer-events: none;
+  mix-blend-mode: difference;
+  filter: drop-shadow(2px 4px 6px black);
+}
+.a-second-title {
+  position: absolute;
+  margin-top: 25vh;
+  pointer-events: none;
+  -webkit-text-stroke: 1.3px white;
+  letter-spacing: 1.125px;
+  font-size: -webkit-xxx-large;
+  font-weight: 900;
+  mix-blend-mode: color-dodge;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+}
+
+javascript
+
+use strict';
+
+const canvas = document.getElementsByTagName('canvas')[0];
+canvas.width = canvas.clientWidth;
+canvas.height = canvas.clientHeight;
+
+let config = {
+  TEXTURE_DOWNSAMPLE: 1,
+  DENSITY_DISSIPATION: 0.98,
+  VELOCITY_DISSIPATION: 0.99,
+  PRESSURE_DISSIPATION: 0.8,
+  PRESSURE_ITERATIONS: 25,
+  CURL: 28,
+  SPLAT_RADIUS: 0.004 };
+
+
+let pointers = [];
+let splatStack = [];
+
+const { gl, ext } = getWebGLContext(canvas);
+
+function getWebGLContext(canvas) {
+  const params = { alpha: false, depth: false, stencil: false, antialias: false };
+
+  let gl = canvas.getContext('webgl2', params);
+  const isWebGL2 = !!gl;
+  if (!isWebGL2)
+  gl = canvas.getContext('webgl', params) || canvas.getContext('experimental-webgl', params);
+
+  let halfFloat;
+  let supportLinearFiltering;
+  if (isWebGL2) {
+    gl.getExtension('EXT_color_buffer_float');
+    supportLinearFiltering = gl.getExtension('OES_texture_float_linear');
+  } else {
+    halfFloat = gl.getExtension('OES_texture_half_float');
+    supportLinearFiltering = gl.getExtension('OES_texture_half_float_linear');
+  }
+
+  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+  const halfFloatTexType = isWebGL2 ? gl.HALF_FLOAT : halfFloat.HALF_FLOAT_OES;
+  let formatRGBA;
+  let formatRG;
+  let formatR;
+
+  if (isWebGL2)
+  {
+    formatRGBA = getSupportedFormat(gl, gl.RGBA16F, gl.RGBA, halfFloatTexType);
+    formatRG = getSupportedFormat(gl, gl.RG16F, gl.RG, halfFloatTexType);
+    formatR = getSupportedFormat(gl, gl.R16F, gl.RED, halfFloatTexType);
+  } else
+
+  {
+    formatRGBA = getSupportedFormat(gl, gl.RGBA, gl.RGBA, halfFloatTexType);
+    formatRG = getSupportedFormat(gl, gl.RGBA, gl.RGBA, halfFloatTexType);
+    formatR = getSupportedFormat(gl, gl.RGBA, gl.RGBA, halfFloatTexType);
+  }
+
+  return {
+    gl,
+    ext: {
+      formatRGBA,
+      formatRG,
+      formatR,
+      halfFloatTexType,
+      supportLinearFiltering } };
+
+
+}
+
+function getSupportedFormat(gl, internalFormat, format, type)
+{
+  if (!supportRenderTextureFormat(gl, internalFormat, format, type))
+  {
+    switch (internalFormat) {
+
+      case gl.R16F:
+        return getSupportedFormat(gl, gl.RG16F, gl.RG, type);
+      case gl.RG16F:
+        return getSupportedFormat(gl, gl.RGBA16F, gl.RGBA, type);
+      default:
+        return null;}
+
+  }
+
+  return {
+    internalFormat,
+    format };
+
+}
+
+function supportRenderTextureFormat(gl, internalFormat, format, type) {
+  let texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, 4, 4, 0, format, type, null);
+
+  let fbo = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+
+  const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+  if (status != gl.FRAMEBUFFER_COMPLETE)
+  return false;
+  return true;
+}
+
+function pointerPrototype() {
+  this.id = -1;
+  this.x = 0;
+  this.y = 0;
+  this.dx = 0;
+  this.dy = 0;
+  this.down = false;
+  this.moved = false;
+  this.color = [30, 0, 300];
+}
+
+pointers.push(new pointerPrototype());
+
+class GLProgram {
+  constructor(vertexShader, fragmentShader) {
+    this.uniforms = {};
+    this.program = gl.createProgram();
+
+    gl.attachShader(this.program, vertexShader);
+    gl.attachShader(this.program, fragmentShader);
+    gl.linkProgram(this.program);
+
+    if (!gl.getProgramParameter(this.program, gl.LINK_STATUS))
+    throw gl.getProgramInfoLog(this.program);
+
+    const uniformCount = gl.getProgramParameter(this.program, gl.ACTIVE_UNIFORMS);
+    for (let i = 0; i < uniformCount; i++) {
+      const uniformName = gl.getActiveUniform(this.program, i).name;
+      this.uniforms[uniformName] = gl.getUniformLocation(this.program, uniformName);
+    }
+  }
+
+  bind() {
+    gl.useProgram(this.program);
+  }}
+
+
+function compileShader(type, source) {
+  const shader = gl.createShader(type);
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
+  throw gl.getShaderInfoLog(shader);
+
+  return shader;
+};
+
+const baseVertexShader = compileShader(gl.VERTEX_SHADER, `
+    precision highp float;
+    precision mediump sampler2D;
+
+    attribute vec2 aPosition;
+    varying vec2 vUv;
+    varying vec2 vL;
+    varying vec2 vR;
+    varying vec2 vT;
+    varying vec2 vB;
+    uniform vec2 texelSize;
+
+    void main () {
+        vUv = aPosition * 0.5 + 0.5;
+        vL = vUv - vec2(texelSize.x, 0.0);
+        vR = vUv + vec2(texelSize.x, 0.0);
+        vT = vUv + vec2(0.0, texelSize.y);
+        vB = vUv - vec2(0.0, texelSize.y);
+        gl_Position = vec4(aPosition, 0.0, 1.0);
+    }
+`);
+
+const clearShader = compileShader(gl.FRAGMENT_SHADER, `
+    precision highp float;
+    precision mediump sampler2D;
+
+    varying vec2 vUv;
+    uniform sampler2D uTexture;
+    uniform float value;
+
+    void main () {
+        gl_FragColor = value * texture2D(uTexture, vUv);
+    }
+`);
+
+const displayShader = compileShader(gl.FRAGMENT_SHADER, `
+    precision highp float;
+    precision mediump sampler2D;
+
+    varying vec2 vUv;
+    uniform sampler2D uTexture;
+
+    void main () {
+        gl_FragColor = texture2D(uTexture, vUv);
+    }
+`);
+
+const splatShader = compileShader(gl.FRAGMENT_SHADER, `
+    precision highp float;
+    precision mediump sampler2D;
+
+    varying vec2 vUv;
+    uniform sampler2D uTarget;
+    uniform float aspectRatio;
+    uniform vec3 color;
+    uniform vec2 point;
+    uniform float radius;
+
+    void main () {
+        vec2 p = vUv - point.xy;
+        p.x *= aspectRatio;
+        vec3 splat = exp(-dot(p, p) / radius) * color;
+        vec3 base = texture2D(uTarget, vUv).xyz;
+        gl_FragColor = vec4(base + splat, 1.0);
+    }
+`);
+
+const advectionManualFilteringShader = compileShader(gl.FRAGMENT_SHADER, `
+    precision highp float;
+    precision mediump sampler2D;
+
+    varying vec2 vUv;
+    uniform sampler2D uVelocity;
+    uniform sampler2D uSource;
+    uniform vec2 texelSize;
+    uniform float dt;
+    uniform float dissipation;
+
+    vec4 bilerp (in sampler2D sam, in vec2 p) {
+        vec4 st;
+        st.xy = floor(p - 0.5) + 0.5;
+        st.zw = st.xy + 1.0;
+        vec4 uv = st * texelSize.xyxy;
+        vec4 a = texture2D(sam, uv.xy);
+        vec4 b = texture2D(sam, uv.zy);
+        vec4 c = texture2D(sam, uv.xw);
+        vec4 d = texture2D(sam, uv.zw);
+        vec2 f = p - st.xy;
+        return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+    }
+
+    void main () {
+        vec2 coord = gl_FragCoord.xy - dt * texture2D(uVelocity, vUv).xy;
+        gl_FragColor = dissipation * bilerp(uSource, coord);
+        gl_FragColor.a = 1.0;
+    }
+`);
+
+const advectionShader = compileShader(gl.FRAGMENT_SHADER, `
+    precision highp float;
+    precision mediump sampler2D;
+
+    varying vec2 vUv;
+    uniform sampler2D uVelocity;
+    uniform sampler2D uSource;
+    uniform vec2 texelSize;
+    uniform float dt;
+    uniform float dissipation;
+
+    void main () {
+        vec2 coord = vUv - dt * texture2D(uVelocity, vUv).xy * texelSize;
+        gl_FragColor = dissipation * texture2D(uSource, coord);
+        gl_FragColor.a = 1.0;
+    }
+`);
+
+const divergenceShader = compileShader(gl.FRAGMENT_SHADER, `
+    precision highp float;
+    precision mediump sampler2D;
+
+    varying vec2 vUv;
+    varying vec2 vL;
+    varying vec2 vR;
+    varying vec2 vT;
+    varying vec2 vB;
+    uniform sampler2D uVelocity;
+
+    vec2 sampleVelocity (in vec2 uv) {
+        vec2 multiplier = vec2(1.0, 1.0);
+        if (uv.x < 0.0) { uv.x = 0.0; multiplier.x = -1.0; }
+        if (uv.x > 1.0) { uv.x = 1.0; multiplier.x = -1.0; }
+        if (uv.y < 0.0) { uv.y = 0.0; multiplier.y = -1.0; }
+        if (uv.y > 1.0) { uv.y = 1.0; multiplier.y = -1.0; }
+        return multiplier * texture2D(uVelocity, uv).xy;
+    }
+
+    void main () {
+        float L = sampleVelocity(vL).x;
+        float R = sampleVelocity(vR).x;
+        float T = sampleVelocity(vT).y;
+        float B = sampleVelocity(vB).y;
+        float div = 0.5 * (R - L + T - B);
+        gl_FragColor = vec4(div, 0.0, 0.0, 1.0);
+    }
+`);
+
+const curlShader = compileShader(gl.FRAGMENT_SHADER, `
+    precision highp float;
+    precision mediump sampler2D;
+
+    varying vec2 vUv;
+    varying vec2 vL;
+    varying vec2 vR;
+    varying vec2 vT;
+    varying vec2 vB;
+    uniform sampler2D uVelocity;
+
+    void main () {
+        float L = texture2D(uVelocity, vL).y;
+        float R = texture2D(uVelocity, vR).y;
+        float T = texture2D(uVelocity, vT).x;
+        float B = texture2D(uVelocity, vB).x;
+        float vorticity = R - L - T + B;
+        gl_FragColor = vec4(vorticity, 0.0, 0.0, 1.0);
+    }
+`);
+
+const vorticityShader = compileShader(gl.FRAGMENT_SHADER, `
+    precision highp float;
+    precision mediump sampler2D;
+
+    varying vec2 vUv;
+    varying vec2 vT;
+    varying vec2 vB;
+    uniform sampler2D uVelocity;
+    uniform sampler2D uCurl;
+    uniform float curl;
+    uniform float dt;
+
+    void main () {
+        float T = texture2D(uCurl, vT).x;
+        float B = texture2D(uCurl, vB).x;
+        float C = texture2D(uCurl, vUv).x;
+        vec2 force = vec2(abs(T) - abs(B), 0.0);
+        force *= 1.0 / length(force + 0.00001) * curl * C;
+        vec2 vel = texture2D(uVelocity, vUv).xy;
+        gl_FragColor = vec4(vel + force * dt, 0.0, 1.0);
+    }
+`);
+
+const pressureShader = compileShader(gl.FRAGMENT_SHADER, `
+    precision highp float;
+    precision mediump sampler2D;
+
+    varying vec2 vUv;
+    varying vec2 vL;
+    varying vec2 vR;
+    varying vec2 vT;
+    varying vec2 vB;
+    uniform sampler2D uPressure;
+    uniform sampler2D uDivergence;
+
+    vec2 boundary (in vec2 uv) {
+        uv = min(max(uv, 0.0), 1.0);
+        return uv;
+    }
+
+    void main () {
+        float L = texture2D(uPressure, boundary(vL)).x;
+        float R = texture2D(uPressure, boundary(vR)).x;
+        float T = texture2D(uPressure, boundary(vT)).x;
+        float B = texture2D(uPressure, boundary(vB)).x;
+        float C = texture2D(uPressure, vUv).x;
+        float divergence = texture2D(uDivergence, vUv).x;
+        float pressure = (L + R + B + T - divergence) * 0.25;
+        gl_FragColor = vec4(pressure, 0.0, 0.0, 1.0);
+    }
+`);
+
+const gradientSubtractShader = compileShader(gl.FRAGMENT_SHADER, `
+    precision highp float;
+    precision mediump sampler2D;
+
+    varying vec2 vUv;
+    varying vec2 vL;
+    varying vec2 vR;
+    varying vec2 vT;
+    varying vec2 vB;
+    uniform sampler2D uPressure;
+    uniform sampler2D uVelocity;
+
+    vec2 boundary (in vec2 uv) {
+        uv = min(max(uv, 0.0), 1.0);
+        return uv;
+    }
+
+    void main () {
+        float L = texture2D(uPressure, boundary(vL)).x;
+        float R = texture2D(uPressure, boundary(vR)).x;
+        float T = texture2D(uPressure, boundary(vT)).x;
+        float B = texture2D(uPressure, boundary(vB)).x;
+        vec2 velocity = texture2D(uVelocity, vUv).xy;
+        velocity.xy -= vec2(R - L, T - B);
+        gl_FragColor = vec4(velocity, 0.0, 1.0);
+    }
+`);
+
+let textureWidth;
+let textureHeight;
+let density;
+let velocity;
+let divergence;
+let curl;
+let pressure;
+initFramebuffers();
+
+const clearProgram = new GLProgram(baseVertexShader, clearShader);
+const displayProgram = new GLProgram(baseVertexShader, displayShader);
+const splatProgram = new GLProgram(baseVertexShader, splatShader);
+const advectionProgram = new GLProgram(baseVertexShader, ext.supportLinearFiltering ? advectionShader : advectionManualFilteringShader);
+const divergenceProgram = new GLProgram(baseVertexShader, divergenceShader);
+const curlProgram = new GLProgram(baseVertexShader, curlShader);
+const vorticityProgram = new GLProgram(baseVertexShader, vorticityShader);
+const pressureProgram = new GLProgram(baseVertexShader, pressureShader);
+const gradienSubtractProgram = new GLProgram(baseVertexShader, gradientSubtractShader);
+
+function initFramebuffers() {
+  textureWidth = gl.drawingBufferWidth >> config.TEXTURE_DOWNSAMPLE;
+  textureHeight = gl.drawingBufferHeight >> config.TEXTURE_DOWNSAMPLE;
+
+  const texType = ext.halfFloatTexType;
+  const rgba = ext.formatRGBA;
+  const rg = ext.formatRG;
+  const r = ext.formatR;
+
+  density = createDoubleFBO(2, textureWidth, textureHeight, rgba.internalFormat, rgba.format, texType, ext.supportLinearFiltering ? gl.LINEAR : gl.NEAREST);
+  velocity = createDoubleFBO(0, textureWidth, textureHeight, rg.internalFormat, rg.format, texType, ext.supportLinearFiltering ? gl.LINEAR : gl.NEAREST);
+  divergence = createFBO(4, textureWidth, textureHeight, r.internalFormat, r.format, texType, gl.NEAREST);
+  curl = createFBO(5, textureWidth, textureHeight, r.internalFormat, r.format, texType, gl.NEAREST);
+  pressure = createDoubleFBO(6, textureWidth, textureHeight, r.internalFormat, r.format, texType, gl.NEAREST);
+}
+
+function createFBO(texId, w, h, internalFormat, format, type, param) {
+  gl.activeTexture(gl.TEXTURE0 + texId);
+  let texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, param);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, param);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, w, h, 0, format, type, null);
+
+  let fbo = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+  gl.viewport(0, 0, w, h);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+
+  return [texture, fbo, texId];
+}
+
+function createDoubleFBO(texId, w, h, internalFormat, format, type, param) {
+  let fbo1 = createFBO(texId, w, h, internalFormat, format, type, param);
+  let fbo2 = createFBO(texId + 1, w, h, internalFormat, format, type, param);
+
+  return {
+    get read() {
+      return fbo1;
+    },
+    get write() {
+      return fbo2;
+    },
+    swap() {
+      let temp = fbo1;
+      fbo1 = fbo2;
+      fbo2 = temp;
+    } };
+
+}
+
+const blit = (() => {
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, -1, 1, 1, 1, 1, -1]), gl.STATIC_DRAW);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array([0, 1, 2, 0, 2, 3]), gl.STATIC_DRAW);
+  gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(0);
+
+  return destination => {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, destination);
+    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+  };
+})();
+
+let lastTime = Date.now();
+multipleSplats(parseInt(Math.random() * 20) + 5);
+update();
+
+function update() {
+  resizeCanvas();
+
+  const dt = Math.min((Date.now() - lastTime) / 1000, 0.016);
+  lastTime = Date.now();
+
+  gl.viewport(0, 0, textureWidth, textureHeight);
+
+  if (splatStack.length > 0)
+  multipleSplats(splatStack.pop());
+
+  advectionProgram.bind();
+  gl.uniform2f(advectionProgram.uniforms.texelSize, 1.0 / textureWidth, 1.0 / textureHeight);
+  gl.uniform1i(advectionProgram.uniforms.uVelocity, velocity.read[2]);
+  gl.uniform1i(advectionProgram.uniforms.uSource, velocity.read[2]);
+  gl.uniform1f(advectionProgram.uniforms.dt, dt);
+  gl.uniform1f(advectionProgram.uniforms.dissipation, config.VELOCITY_DISSIPATION);
+  blit(velocity.write[1]);
+  velocity.swap();
+
+  gl.uniform1i(advectionProgram.uniforms.uVelocity, velocity.read[2]);
+  gl.uniform1i(advectionProgram.uniforms.uSource, density.read[2]);
+  gl.uniform1f(advectionProgram.uniforms.dissipation, config.DENSITY_DISSIPATION);
+  blit(density.write[1]);
+  density.swap();
+
+  for (let i = 0; i < pointers.length; i++) {
+    const pointer = pointers[i];
+    if (pointer.moved) {
+      splat(pointer.x, pointer.y, pointer.dx, pointer.dy, pointer.color);
+      pointer.moved = false;
+    }
+  }
+
+  curlProgram.bind();
+  gl.uniform2f(curlProgram.uniforms.texelSize, 1.0 / textureWidth, 1.0 / textureHeight);
+  gl.uniform1i(curlProgram.uniforms.uVelocity, velocity.read[2]);
+  blit(curl[1]);
+
+  vorticityProgram.bind();
+  gl.uniform2f(vorticityProgram.uniforms.texelSize, 1.0 / textureWidth, 1.0 / textureHeight);
+  gl.uniform1i(vorticityProgram.uniforms.uVelocity, velocity.read[2]);
+  gl.uniform1i(vorticityProgram.uniforms.uCurl, curl[2]);
+  gl.uniform1f(vorticityProgram.uniforms.curl, config.CURL);
+  gl.uniform1f(vorticityProgram.uniforms.dt, dt);
+  blit(velocity.write[1]);
+  velocity.swap();
+
+  divergenceProgram.bind();
+  gl.uniform2f(divergenceProgram.uniforms.texelSize, 1.0 / textureWidth, 1.0 / textureHeight);
+  gl.uniform1i(divergenceProgram.uniforms.uVelocity, velocity.read[2]);
+  blit(divergence[1]);
+
+  clearProgram.bind();
+  let pressureTexId = pressure.read[2];
+  gl.activeTexture(gl.TEXTURE0 + pressureTexId);
+  gl.bindTexture(gl.TEXTURE_2D, pressure.read[0]);
+  gl.uniform1i(clearProgram.uniforms.uTexture, pressureTexId);
+  gl.uniform1f(clearProgram.uniforms.value, config.PRESSURE_DISSIPATION);
+  blit(pressure.write[1]);
+  pressure.swap();
+
+  pressureProgram.bind();
+  gl.uniform2f(pressureProgram.uniforms.texelSize, 1.0 / textureWidth, 1.0 / textureHeight);
+  gl.uniform1i(pressureProgram.uniforms.uDivergence, divergence[2]);
+  pressureTexId = pressure.read[2];
+  gl.uniform1i(pressureProgram.uniforms.uPressure, pressureTexId);
+  gl.activeTexture(gl.TEXTURE0 + pressureTexId);
+  for (let i = 0; i < config.PRESSURE_ITERATIONS; i++) {
+    gl.bindTexture(gl.TEXTURE_2D, pressure.read[0]);
+    blit(pressure.write[1]);
+    pressure.swap();
+  }
+
+  gradienSubtractProgram.bind();
+  gl.uniform2f(gradienSubtractProgram.uniforms.texelSize, 1.0 / textureWidth, 1.0 / textureHeight);
+  gl.uniform1i(gradienSubtractProgram.uniforms.uPressure, pressure.read[2]);
+  gl.uniform1i(gradienSubtractProgram.uniforms.uVelocity, velocity.read[2]);
+  blit(velocity.write[1]);
+  velocity.swap();
+
+  gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+  displayProgram.bind();
+  gl.uniform1i(displayProgram.uniforms.uTexture, density.read[2]);
+  blit(null);
+
+  requestAnimationFrame(update);
+}
+
+function splat(x, y, dx, dy, color) {
+  splatProgram.bind();
+  gl.uniform1i(splatProgram.uniforms.uTarget, velocity.read[2]);
+  gl.uniform1f(splatProgram.uniforms.aspectRatio, canvas.width / canvas.height);
+  gl.uniform2f(splatProgram.uniforms.point, x / canvas.width, 1.0 - y / canvas.height);
+  gl.uniform3f(splatProgram.uniforms.color, dx, -dy, 1.0);
+  gl.uniform1f(splatProgram.uniforms.radius, config.SPLAT_RADIUS);
+  blit(velocity.write[1]);
+  velocity.swap();
+
+  gl.uniform1i(splatProgram.uniforms.uTarget, density.read[2]);
+  gl.uniform3f(splatProgram.uniforms.color, color[0] * 0.3, color[1] * 0.3, color[2] * 0.3);
+  blit(density.write[1]);
+  density.swap();
+}
+
+function multipleSplats(amount) {
+  for (let i = 0; i < amount; i++) {
+    const color = [Math.random() * 10, Math.random() * 10, Math.random() * 10];
+    const x = canvas.width * Math.random();
+    const y = canvas.height * Math.random();
+    const dx = 1000 * (Math.random() - 0.5);
+    const dy = 1000 * (Math.random() - 0.5);
+    splat(x, y, dx, dy, color);
+  }
+}
+
+function resizeCanvas() {
+  if (canvas.width != canvas.clientWidth || canvas.height != canvas.clientHeight) {
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+    initFramebuffers();
+  }
+}
+
+canvas.addEventListener('mousemove', e => {
+  pointers[0].moved = pointers[0].down;
+  pointers[0].dx = (e.offsetX - pointers[0].x) * 10.0;
+  pointers[0].dy = (e.offsetY - pointers[0].y) * 10.0;
+  pointers[0].x = e.offsetX;
+  pointers[0].y = e.offsetY;
+});
+
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const touches = e.targetTouches;
+  for (let i = 0; i < touches.length; i++) {
+    let pointer = pointers[i];
+    pointer.moved = pointer.down;
+    pointer.dx = (touches[i].pageX - pointer.x) * 10.0;
+    pointer.dy = (touches[i].pageY - pointer.y) * 10.0;
+    pointer.x = touches[i].pageX;
+    pointer.y = touches[i].pageY;
+  }
+}, false);
+
+canvas.addEventListener('mousemove', () => {
+  pointers[0].down = true;
+  pointers[0].color = [Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2];
+});
+
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const touches = e.targetTouches;
+  for (let i = 0; i < touches.length; i++) {
+    if (i >= pointers.length)
+    pointers.push(new pointerPrototype());
+
+    pointers[i].id = touches[i].identifier;
+    pointers[i].down = true;
+    pointers[i].x = touches[i].pageX;
+    pointers[i].y = touches[i].pageY;
+    pointers[i].color = [Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2];
+  }
+});
+
+window.addEventListener('mouseleave', () => {
+  pointers[0].down = false;
+});
+
+window.addEventListener('touchend', e => {
+  const touches = e.changedTouches;
+  for (let i = 0; i < touches.length; i++)
+  for (let j = 0; j < pointers.length; j++)
+  if (touches[i].identifier == pointers[j].id)
+  pointers[j].down = false;
+});
+
+
+CodePen Home
+Login Form with floating placeholder and light button
+
+html
+
+<div class="login-box">
+  <h2>Login</h2>
+  <form>
+    <div class="user-box">
+      <input type="text" name="" required="">
+      <label>Username</label>
+    </div>
+    <div class="user-box">
+      <input type="password" name="" required="">
+      <label>Password</label>
+    </div>
+  </form>
+</div>
+
+
+css
+
+html {
+  height: 100%;
+}
+
+.login-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  padding: 40px;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,.5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0,0,0,.6);
+  border-radius: 10px;
+}
+
+.login-box h2 {
+  margin: 0 0 30px;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+}
+
+.login-box .user-box {
+  position: relative;
+}
+
+.login-box .user-box input {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  margin-bottom: 30px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: none;
+  background: transparent;
+}
+.login-box .user-box label {
+  position: absolute;
+  top:0;
+  left: 0;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  pointer-events: none;
+  transition: .5s;
+}
+
+.login-box .user-box input:focus ~ label,
+.login-box .user-box input:valid ~ label {
+  top: -20px;
+  left: 0;
+  color: #03e9f4;
+  font-size: 12px;
+}
+
+.login-box form a {
+  position: relative;
+  display: inline-block;
+  padding: 10px 20px;
+  color: #03e9f4;
+  font-size: 16px;
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow: hidden;
+  transition: .5s;
+  margin-top: 40px;
+  letter-spacing: 4px
+}
+
+
+Родной клауд, вот чекай для луны
+
+css
+
+body { margin: 0; }
+canvas { width: 100%; height: 100% ; vertical-align:bottom}
+
+javascript
+
+var textureURL = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/17271/lroc_color_poles_1k.jpg";
+var displacementURL = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/17271/ldem_3_8bit.jpg";
+var worldURL = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/17271/hipp8_s.jpg"
+
+var scene = new THREE.Scene();
+
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+var renderer = new THREE.WebGLRenderer();
+
+var controls = new THREE.OrbitControls( camera, renderer.domElement );
+controls.enablePan = false;
+
+
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+
+var geometry = new THREE.SphereGeometry( 2,60,60 );
+
+var textureLoader = new THREE.TextureLoader();
+var texture = textureLoader.load( textureURL );
+var displacementMap = textureLoader.load( displacementURL );
+var worldTexture = textureLoader.load( worldURL );
+
+var material = new THREE.MeshPhongMaterial (
+  { color: 0xffffff ,
+  map: texture ,
+     displacementMap: displacementMap,
+  displacementScale: 0.06,
+  bumpMap: displacementMap,
+  bumpScale: 0.04,
+   reflectivity:0,
+   shininess :0
+  }
+
+);
+
+var moon = new THREE.Mesh( geometry, material );
+
+
+const light = new THREE.DirectionalLight(0xFFFFFF, 1);
+light.position.set(-100, 10,50);
+scene.add(light);
+
+
+hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.1 );
+hemiLight.color.setHSL( 0.6, 1, 0.6 );
+hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+hemiLight.position.set( 0, 0, 0 );
+scene.add( hemiLight );
+
+
+var worldGeometry = new THREE.SphereGeometry( 1000,60,60 );
+var worldMaterial = new THREE.MeshBasicMaterial (
+  { color: 0xffffff ,
+  map: worldTexture ,
+  side: THREE.BackSide
+  }
+);
+var world = new THREE.Mesh( worldGeometry, worldMaterial );
+scene.add( world );
+
+scene.add( moon );
+camera.position.z = 5;
+
+moon.rotation.x = 3.1415*0.02;
+moon.rotation.y = 3.1415*1.54;
+
+
+function animate() {
+	requestAnimationFrame( animate );
+  moon.rotation.y += 0.002;
+  moon.rotation.x += 0.0001;
+  world.rotation.y += 0.0001
+  world.rotation.x += 0.0005
+
+	renderer.render( scene, camera );
+}
+animate();
+
+
+function onResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+window.addEventListener('resize', onResize, false);
+
+
+а вот для кнопки чата ИИ
+
+html
+
+<div class="sparkle-button">
+
+  <button>
+    <span class="spark"></span>
+    <!-- <span class="spark"></span> -->
+    <span class="backdrop"></span>
+    <svg class="sparkle" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14.187 8.096L15 5.25L15.813 8.096C16.0231 8.83114 16.4171 9.50062 16.9577 10.0413C17.4984 10.5819 18.1679 10.9759 18.903 11.186L21.75 12L18.904 12.813C18.1689 13.0231 17.4994 13.4171 16.9587 13.9577C16.4181 14.4984 16.0241 15.1679 15.814 15.903L15 18.75L14.187 15.904C13.9769 15.1689 13.5829 14.4994 13.0423 13.9587C12.5016 13.4181 11.8321 13.0241 11.097 12.814L8.25 12L11.096 11.187C11.8311 10.9769 12.5006 10.5829 13.0413 10.0423C13.5819 9.50162 13.9759 8.83214 14.186 8.097L14.187 8.096Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M6 14.25L5.741 15.285C5.59267 15.8785 5.28579 16.4206 4.85319 16.8532C4.42059 17.2858 3.87853 17.5927 3.285 17.741L2.25 18L3.285 18.259C3.87853 18.4073 4.42059 18.7142 4.85319 19.1468C5.28579 19.5794 5.59267 20.1215 5.741 20.715L6 21.75L6.259 20.715C6.40725 20.1216 6.71398 19.5796 7.14639 19.147C7.5788 18.7144 8.12065 18.4075 8.714 18.259L9.75 18L8.714 17.741C8.12065 17.5925 7.5788 17.2856 7.14639 16.853C6.71398 16.4204 6.40725 15.8784 6.259 15.285L6 14.25Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M6.5 4L6.303 4.5915C6.24777 4.75718 6.15472 4.90774 6.03123 5.03123C5.90774 5.15472 5.75718 5.24777 5.5915 5.303L5 5.5L5.5915 5.697C5.75718 5.75223 5.90774 5.84528 6.03123 5.96877C6.15472 6.09226 6.24777 6.24282 6.303 6.4085L6.5 7L6.697 6.4085C6.75223 6.24282 6.84528 6.09226 6.96877 5.96877C7.09226 5.84528 7.24282 5.75223 7.4085 5.697L8 5.5L7.4085 5.303C7.24282 5.24777 7.09226 5.15472 6.96877 5.03123C6.84528 4.90774 6.75223 4.75718 6.697 4.5915L6.5 4Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <span class="text">Generate Site</span>
+  </button>
+  <div class="bodydrop"></div>
+  <span aria-hidden="true" class="particle-pen">
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </span>
+</div>
+
+css
+
+*,
+*:after,
+*:before {
+	box-sizing: border-box;
+}
+:root {
+	--transition: 0.25s;
+	--spark: 1.8s;
+}
+
+body {
+	--active: 0;
+	background: hsl(
+		260
+		calc(var(--active) * 97%)
+		6%
+	);
+	display: grid;
+	place-items: center;
+	min-height: 100vh;
+	font-family: system-ui, sans-serif;
+	transition: background var(--transition);
+	overflow: hidden;
+}
+
+button {
+	--cut: 0.1em;
+	--active: 0;
+	--bg:
+		radial-gradient(
+			40% 50% at center 100%,
+			hsl(270 calc(var(--active) * 97%) 72% / var(--active)),
+			transparent
+		),
+		radial-gradient(
+			80% 100% at center 120%,
+			hsl(260 calc(var(--active) * 97%) 70% / var(--active)),
+			transparent
+		),
+		hsl(260 calc(var(--active) * 97%) calc((var(--active) * 44%) + 12%));
+	background: var(--bg);
+	font-size: 2rem;
+	font-weight: 500;
+	border: 0;
+	cursor: pointer;
+	padding: 0.9em 1.3em;
+	display: flex;
+	align-items: center;
+	gap: 0.25em;
+	white-space: nowrap;
+	border-radius: 100px;
+	position: relative;
+	box-shadow:
+		0 0 calc(var(--active) * 6em) calc(var(--active) * 3em) hsl(260 97% 61% / 0.75),
+		0 0.05em 0 0 hsl(260 calc(var(--active) * 97%) calc((var(--active) * 50%) + 30%)) inset,
+		0 -0.05em 0 0 hsl(260 calc(var(--active) * 97%) calc(var(--active) * 60%)) inset;
+	transition: box-shadow var(--transition), scale var(--transition), background var(--transition);
+	scale: calc(1 + (var(--active) * 0.1));
+}
+
+button:active {
+  scale: 1;
+}
+
+svg {
+	overflow: visible !important;
+}
+
+.sparkle path {
+	color: hsl(0 0% calc((var(--active, 0) * 70%) + var(--base)));
+	transform-box: fill-box;
+	transform-origin: center;
+	fill: currentColor;
+	stroke: currentColor;
+	animation-delay: calc((var(--transition) * 1.5) + (var(--delay) * 1s));
+	animation-duration: 0.6s;
+	transition: color var(--transition);
+}
+
+button:is(:hover, :focus-visible) path {
+	animation-name: bounce;
+}
+
+@keyframes bounce {
+	35%, 65% {
+		scale: var(--scale);
+	}
+}
+.sparkle path:nth-of-type(1) {
+	--scale: 0.5;
+	--delay: 0.1;
+	--base: 40%;
+}
+
+.sparkle path:nth-of-type(2) {
+	--scale: 1.5;
+	--delay: 0.2;
+	--base: 20%;
+}
+
+.sparkle path:nth-of-type(3) {
+	--scale: 2.5;
+	--delay: 0.35;
+	--base: 30%;
+}
+
+button:before {
+	content: "";
+	position: absolute;
+	inset: -0.25em;
+	z-index: -1;
+	border: 0.25em solid hsl(260 97% 50% / 0.5);
+	border-radius: 100px;
+	opacity: var(--active, 0);
+	transition: opacity var(--transition);
+}
+
+.spark {
+	position: absolute;
+	inset: 0;
+	border-radius: 100px;
+	rotate: 0deg;
+	overflow: hidden;
+	mask: linear-gradient(white, transparent 50%);
+	animation: flip calc(var(--spark) * 2) infinite steps(2, end);
+}
+
+@keyframes flip {
+	to {
+		rotate: 360deg;
+	}
+}
+
+.spark:before {
+	content: "";
+	position: absolute;
+	width: 200%;
+	aspect-ratio: 1;
+	top: 0%;
+	left: 50%;
+	z-index: -1;
+	translate: -50% -15%;
+	rotate: 0;
+	transform: rotate(-90deg);
+	opacity: calc((var(--active)) + 0.4);
+	background: conic-gradient(
+		from 0deg,
+		transparent 0 340deg,
+		white 360deg
+	);
+	transition: opacity var(--transition);
+	animation: rotate var(--spark) linear infinite both;
+}
+
+.spark:after {
+	content: "";
+	position: absolute;
+	inset: var(--cut);
+	border-radius: 100px;
+}
+
+.backdrop {
+	position: absolute;
+	inset: var(--cut);
+	background: var(--bg);
+	border-radius: 100px;
+	transition: background var(--transition);
+}
+
+@keyframes rotate {
+	to {
+		transform: rotate(90deg);
+	}
+}
+
+
+
+@supports(selector(:has(:is(+ *)))) {
+	body:has(button:is(:hover, :focus-visible)) {
+		--active: 1;
+		--play-state: running;
+	}
+	.bodydrop {
+		display: none;
+	}
+}
+
+button:is(:hover, :focus-visible) ~ :is(.bodydrop, .particle-pen) {
+	--active: 1;
+	--play-state: runnin;
+}
+
+.bodydrop {
+	background: hsl(
+		260
+		calc(var(--active) * 97%)
+		6%
+	);
+	position: fixed;
+	inset: 0;
+	z-index: -1
+}
+
+
+
+button:is(:hover, :focus-visible) {
+	--active: 1;
+	--play-state: running;
+}
+
+
+.sparkle-button {
+	position: relative;
+}
+
+.particle-pen {
+	position: absolute;
+	width: 200%;
+	aspect-ratio: 1;
+	top: 50%;
+	left: 50%;
+	translate: -50% -50%;
+	-webkit-mask: radial-gradient(white, transparent 65%);
+	z-index: -1;
+	opacity: var(--active, 0);
+	transition: opacity var(--transition);
+}
+
+.particle {
+	fill: white;
+	width: calc(var(--size, 0.25) * 1rem);
+	aspect-ratio: 1;
+	position: absolute;
+	top: calc(var(--y) * 1%);
+	left: calc(var(--x) * 1%);
+	opacity: var(--alpha, 1);
+	animation: float-out calc(var(--duration, 1) * 1s) calc(var(--delay) * -1s) infinite linear;
+	transform-origin: var(--origin-x, 1000%) var(--origin-y, 1000%);
+	z-index: -1;
+	animation-play-state: var(--play-state, paused);
+}
+
+.particle path {
+	fill: hsl(0 0% 90%);
+	stroke: none;
+}
+
+.particle:nth-of-type(even) {
+	animation-direction: reverse;
+}
+
+@keyframes float-out {
+	to {
+		rotate: 360deg;
+	}
+}
+
+.text {
+	translate: 2% -6%;
+	letter-spacing: 0.01ch;
+	background: linear-gradient(90deg, hsl(0 0% calc((var(--active) * 100%) + 65%)), hsl(0 0% calc((var(--active) * 100%) + 26%)));
+	-webkit-background-clip: text;
+	color: transparent;
+	transition: background var(--transition);
+}
+
+button svg {
+	inline-size: 1.25em;
+	translate: -25% -5%;
+}
+
+javaScript
+
+// JavaScript used to set randomness for particles.
+// Could be done via SSR
+
+const RANDOM = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+const PARTICLES = document.querySelectorAll('.particle')
+PARTICLES.forEach(P => {
+	P.setAttribute('style', `
+		--x: ${RANDOM(20, 80)};
+		--y: ${RANDOM(20, 80)};
+		--duration: ${RANDOM(6, 20)};
+		--delay: ${RANDOM(1, 10)};
+		--alpha: ${RANDOM(40, 90) / 100};
+		--origin-x: ${Math.random() > 0.5 ? RANDOM(300, 800) * -1 : RANDOM(300, 800)}%;
+		--origin-y: ${Math.random() > 0.5 ? RANDOM(300, 800) * -1 : RANDOM(300, 800)}%;
+		--size: ${RANDOM(40, 90) / 100};
+	`)
+})
+

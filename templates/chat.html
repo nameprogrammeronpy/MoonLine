@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoonLine — Luna AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0D0D1A;
+            --bg-card: rgba(20, 20, 40, 0.85);
+            --accent-glow: #64C4ED;
+            --accent-lavender: #C9B6E4;
+            --text-light: #F0F0F0;
+            --text-muted: #94A3B8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.light-mode {
+            --bg-dark: #F7F9FC;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --text-light: #1E293B;
+            --text-muted: #64748B;
+        }
+
+        .bg-layer {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .bg-dark-theme {
+            background: url('{{ url_for("static", filename="images/backgrounddarktheme.jpg") }}') center/cover no-repeat;
+            opacity: 1;
+        }
+
+        .bg-light-theme {
+            background: url('{{ url_for("static", filename="images/backgroundbrighttheme.jpg") }}') center/cover no-repeat;
+            opacity: 0;
+        }
+
+        body.light-mode .bg-dark-theme { opacity: 0; }
+        body.light-mode .bg-light-theme { opacity: 1; }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, rgba(13, 13, 26, 0.7) 0%, rgba(13, 13, 26, 0.9) 100%);
+            z-index: 1;
+        }
+
+        body.light-mode .bg-overlay {
+            background: linear-gradient(180deg, rgba(247, 249, 252, 0.7) 0%, rgba(247, 249, 252, 0.85) 100%);
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(100, 196, 237, 0.1);
+        }
+
+        .back-btn {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-btn:hover { color: var(--accent-glow); }
+
+        .luna-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .luna-avatar-sm {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-glow), var(--accent-lavender));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .luna-info h3 {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .luna-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            color: #86EFAC;
+        }
+
+        .status-dot {
+            width: 6px; height: 6px;
+            background: #86EFAC;
+            border-radius: 50%;
+        }
+
+        .theme-switch {
+            position: relative;
+            width: 45px; height: 24px;
+        }
+
+        .theme-switch input { display: none; }
+
+        .theme-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: rgba(100, 196, 237, 0.2);
+            border-radius: 30px;
+            transition: all 0.4s ease;
+        }
+
+        .theme-slider:before {
+            content: "🌙";
+            position: absolute;
+            height: 18px; width: 18px;
+            left: 3px; bottom: 2px;
+            background: var(--bg-card);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        input:checked + .theme-slider:before { transform: translateX(20px); content: "☀️"; }
+
+        /* Chat Container */
+        .chat-container {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 850px;
+            width: 100%;
+            margin: 80px auto 0;
+            padding: 20px;
+        }
+
+        /* Messages */
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .message.assistant .message-avatar {
+            background: linear-gradient(135deg, var(--accent-glow), var(--accent-lavender));
+        }
+
+        .message.user .message-avatar {
+            background: rgba(100, 196, 237, 0.2);
+            border: 1px solid rgba(100, 196, 237, 0.3);
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .message.assistant .message-content {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 196, 237, 0.15);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, rgba(100, 196, 237, 0.2), rgba(201, 182, 228, 0.2));
+            border: 1px solid rgba(100, 196, 237, 0.25);
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: none;
+            padding: 15px 20px;
+            background: var(--bg-card);
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            width: fit-content;
+        }
+
+        .typing-indicator.show { display: flex; gap: 5px; }
+
+        .typing-dot {
+            width: 8px; height: 8px;
+            background: var(--accent-glow);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-8px); opacity: 1; }
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 20px 0;
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(100, 196, 237, 0.15);
+            border-radius: 24px;
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            resize: none;
+            outline: none;
+            min-height: 55px;
+            max-height: 150px;
+            transition: all 0.3s ease;
+        }
+
+        .message-input:focus {
+            border-color: var(--accent-glow);
+            box-shadow: 0 0 0 3px rgba(100, 196, 237, 0.1);
+        }
+
+        .message-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .send-btn {
+            width: 55px; height: 55px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-glow), var(--accent-lavender));
+            border: none;
+            color: var(--bg-dark);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(100, 196, 237, 0.3);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding-bottom: 15px;
+        }
+
+        .quick-btn {
+            padding: 10px 18px;
+            background: rgba(100, 196, 237, 0.1);
+            border: 1px solid rgba(100, 196, 237, 0.2);
+            border-radius: 20px;
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-btn:hover {
+            background: rgba(100, 196, 237, 0.2);
+            border-color: var(--accent-glow);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-avatar {
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-glow), var(--accent-lavender));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 25px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .empty-state h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .header { padding: 12px 15px; }
+            .chat-container { margin-top: 70px; padding: 15px; }
+            .message-content { max-width: 85%; padding: 12px 16px; }
+            .message-input { padding: 14px 18px; }
+            .send-btn { width: 50px; height: 50px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer bg-dark-theme"></div>
+    <div class="bg-layer bg-light-theme"></div>
+    <div class="bg-overlay"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <a href="/dashboard" class="back-btn">← Назад</a>
+        <div class="luna-header">
+            <div class="luna-avatar-sm">🌙</div>
+            <div class="luna-info">
+                <h3>Luna AI</h3>
+                <div class="luna-status">
+                    <span class="status-dot"></span>
+                    Онлайн
+                </div>
+            </div>
+        </div>
+        <label class="theme-switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="theme-slider"></span>
+        </label>
+    </header>
+
+    <!-- Chat -->
+    <div class="chat-container">
+        <div class="messages" id="messages">
+            {% if history %}
+                {% for msg in history %}
+                <div class="message {{ msg.role }}">
+                    <div class="message-avatar">
+                        {% if msg.role == 'assistant' %}🌙{% else %}{{ user.username[0].upper() if user else 'U' }}{% endif %}
+                    </div>
+                    <div class="message-content">
+                        {{ msg.content }}
+                        <div class="message-time">{{ msg.created_at }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state" id="empty-state">
+                    <div class="empty-avatar">🌙</div>
+                    <h3>Привет! Я Luna</h3>
+                    <p>Твой AI-помощник для ментального здоровья. О чём хочешь поговорить?</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="typing-indicator" id="typing">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button class="quick-btn" onclick="sendQuick('Мне тревожно')">😰 Тревога</button>
+            <button class="quick-btn" onclick="sendQuick('Хочу расслабиться')">🧘 Расслабиться</button>
+            <button class="quick-btn" onclick="sendQuick('Плохое настроение')">😔 Грустно</button>
+            <button class="quick-btn" onclick="sendQuick('Расскажи технику дыхания')">🌬️ Дыхание</button>
+        </div>
+
+        <!-- Input -->
+        <div class="input-area">
+            <textarea class="message-input" id="message-input" placeholder="Напиши сообщение..." rows="1"></textarea>
+            <button class="send-btn" id="send-btn" onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+
+    <script>
+        // Theme
+        const themeToggle = document.getElementById('theme-toggle');
+        if (localStorage.getItem('moonline-theme') === 'light') {
+            document.body.classList.add('light-mode');
+            themeToggle.checked = true;
+        }
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('moonline-theme', themeToggle.checked ? 'light' : 'dark');
+        });
+
+        const messagesEl = document.getElementById('messages');
+        const inputEl = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+        const typingEl = document.getElementById('typing');
+
+        // Auto-resize textarea
+        inputEl.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+        });
+
+        // Send on Enter
+        inputEl.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function addMessage(content, role) {
+            // Remove empty state if exists
+            const emptyState = document.getElementById('empty-state');
+            if (emptyState) emptyState.remove();
+
+            const msg = document.createElement('div');
+            msg.className = `message ${role}`;
+            msg.innerHTML = `
+                <div class="message-avatar">${role === 'assistant' ? '🌙' : '{{ user.username[0].upper() if user else "U" }}'}</div>
+                <div class="message-content">
+                    ${content}
+                    <div class="message-time">Сейчас</div>
+                </div>
+            `;
+            messagesEl.appendChild(msg);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const message = inputEl.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, 'user');
+            inputEl.value = '';
+            inputEl.style.height = 'auto';
+
+            // Show typing
+            typingEl.classList.add('show');
+            sendBtn.disabled = true;
+
+            try {
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await res.json();
+
+                typingEl.classList.remove('show');
+
+                if (data.success) {
+                    addMessage(data.response, 'assistant');
+                } else {
+                    addMessage('Извини, произошла ошибка. Попробуй ещё раз 🌙', 'assistant');
+                }
+            } catch (err) {
+                typingEl.classList.remove('show');
+                addMessage('Проверь подключение к интернету 🌙', 'assistant');
+            }
+
+            sendBtn.disabled = false;
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function sendQuick(text) {
+            inputEl.value = text;
+            sendMessage();
+        }
+
+        // Scroll to bottom on load
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    </script>
+</body>
+</html>
+

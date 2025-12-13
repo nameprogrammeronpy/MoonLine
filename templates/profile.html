@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoonLine — Профиль</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0D0D1A;
+            --bg-card: rgba(20, 20, 40, 0.85);
+            --accent-glow: #64C4ED;
+            --accent-lavender: #C9B6E4;
+            --accent-peach: #FFB6A3;
+            --accent-mint: #86EFAC;
+            --text-light: #F0F0F0;
+            --text-muted: #94A3B8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+        }
+
+        body.light-mode {
+            --bg-dark: #F7F9FC;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --text-light: #1E293B;
+            --text-muted: #64748B;
+        }
+
+        .bg-layer {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .bg-dark-theme {
+            background: url('{{ url_for("static", filename="images/backgrounddarktheme.jpg") }}') center/cover no-repeat;
+            opacity: 1;
+        }
+
+        .bg-light-theme {
+            background: url('{{ url_for("static", filename="images/backgroundbrighttheme.jpg") }}') center/cover no-repeat;
+            opacity: 0;
+        }
+
+        body.light-mode .bg-dark-theme { opacity: 0; }
+        body.light-mode .bg-light-theme { opacity: 1; }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, rgba(13, 13, 26, 0.7) 0%, rgba(13, 13, 26, 0.9) 100%);
+            z-index: 1;
+        }
+
+        body.light-mode .bg-overlay {
+            background: linear-gradient(180deg, rgba(247, 249, 252, 0.7) 0%, rgba(247, 249, 252, 0.85) 100%);
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(100, 196, 237, 0.1);
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-btn:hover { color: var(--accent-glow); }
+
+        .header-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+        }
+
+        .theme-switch {
+            position: relative;
+            width: 50px; height: 26px;
+        }
+
+        .theme-switch input { display: none; }
+
+        .theme-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: rgba(100, 196, 237, 0.2);
+            border-radius: 30px;
+            transition: all 0.4s ease;
+        }
+
+        .theme-slider:before {
+            content: "🌙";
+            position: absolute;
+            height: 20px; width: 20px;
+            left: 3px; bottom: 2px;
+            background: var(--bg-card);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+
+        input:checked + .theme-slider:before { transform: translateX(24px); content: "☀️"; }
+
+        /* Main */
+        .main-content {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 120px 20px 50px;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 50px;
+            border: 1px solid rgba(100, 196, 237, 0.15);
+            margin-bottom: 30px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(100, 196, 237, 0.1);
+        }
+
+        .profile-avatar {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-glow), var(--accent-lavender));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            font-weight: 600;
+            color: var(--bg-dark);
+            flex-shrink: 0;
+        }
+
+        .profile-info h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .profile-info p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .member-since {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            padding: 8px 15px;
+            background: rgba(100, 196, 237, 0.1);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--accent-glow);
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 25px;
+            background: rgba(100, 196, 237, 0.08);
+            border-radius: 16px;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--accent-glow), var(--accent-lavender));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        /* Form */
+        .form-section {
+            margin-bottom: 35px;
+        }
+
+        .form-section h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(100, 196, 237, 0.08);
+            border: 1px solid rgba(100, 196, 237, 0.15);
+            border-radius: 12px;
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent-glow);
+            box-shadow: 0 0 0 3px rgba(100, 196, 237, 0.15);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        body.light-mode .form-group input {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: var(--text-light);
+        }
+
+        .save-btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, var(--accent-glow), var(--accent-lavender));
+            border: none;
+            border-radius: 12px;
+            color: var(--bg-dark);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(100, 196, 237, 0.3);
+        }
+
+        /* Danger Zone */
+        .danger-zone {
+            background: rgba(248, 113, 113, 0.08);
+            border: 1px solid rgba(248, 113, 113, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .danger-zone h3 {
+            color: #F87171;
+            margin-bottom: 15px;
+        }
+
+        .danger-zone p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .danger-btn {
+            padding: 12px 25px;
+            background: transparent;
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            border-radius: 10px;
+            color: #F87171;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .danger-btn:hover {
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            border: 1px solid rgba(100, 196, 237, 0.3);
+            padding: 15px 30px;
+            border-radius: 12px;
+            z-index: 2000;
+            transition: transform 0.4s ease;
+        }
+
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.success { border-left: 4px solid var(--accent-mint); }
+
+        @media (max-width: 768px) {
+            .profile-header { flex-direction: column; text-align: center; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .header { padding: 15px 20px; }
+            .main-content { padding: 100px 15px 40px; }
+            .profile-card { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer bg-dark-theme"></div>
+    <div class="bg-layer bg-light-theme"></div>
+    <div class="bg-overlay"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <a href="/dashboard" class="back-btn">← Назад</a>
+        <h2 class="header-title">Профиль</h2>
+        <label class="theme-switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="theme-slider"></span>
+        </label>
+    </header>
+
+    <!-- Main -->
+    <main class="main-content">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">{{ user.username[0].upper() if user else 'U' }}</div>
+                <div class="profile-info">
+                    <h1>{{ user.username if user else 'Пользователь' }}</h1>
+                    <p>{{ user.email if user and user.email else 'Email не указан' }}</p>
+                    <div class="member-since">
+                        🌙 С нами с {{ user.created_at[:10] if user and user.created_at else 'недавно' }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">{{ stats.total if stats else 0 }}</div>
+                    <div class="stat-label">Записей</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ stats.average if stats else '—' }}</div>
+                    <div class="stat-label">Ср. настроение</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ (stats.distribution.get(5, 0) + stats.distribution.get(4, 0)) if stats and stats.distribution else 0 }}</div>
+                    <div class="stat-label">Хороших дней</div>
+                </div>
+            </div>
+
+            <!-- Edit Form -->
+            <form id="profile-form">
+                <div class="form-section">
+                    <h3>✏️ Редактировать профиль</h3>
+                    <div class="form-group">
+                        <label>Имя пользователя</label>
+                        <input type="text" name="username" value="{{ user.username if user else '' }}" placeholder="Твоё имя">
+                    </div>
+                    <div class="form-group">
+                        <label>Email (для уведомлений)</label>
+                        <input type="email" name="email" value="{{ user.email if user and user.email else '' }}" placeholder="example@mail.com">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>🔒 Изменить пароль</h3>
+                    <div class="form-group">
+                        <label>Новый пароль</label>
+                        <input type="password" name="new_password" placeholder="Оставь пустым, если не хочешь менять">
+                    </div>
+                </div>
+
+                <button type="submit" class="save-btn">Сохранить изменения</button>
+            </form>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="danger-zone">
+            <h3>⚠️ Опасная зона</h3>
+            <p>Очистить историю чата с Luna AI. Это действие нельзя отменить.</p>
+            <button class="danger-btn" onclick="clearChat()">Очистить историю чата</button>
+        </div>
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Theme
+        const themeToggle = document.getElementById('theme-toggle');
+        if (localStorage.getItem('moonline-theme') === 'light') {
+            document.body.classList.add('light-mode');
+            themeToggle.checked = true;
+        }
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('moonline-theme', themeToggle.checked ? 'light' : 'dark');
+        });
+
+        // Toast
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Save profile
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+
+            try {
+                const res = await fetch('/api/profile', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Профиль обновлён! ✨');
+                    if (data.user?.username) {
+                        document.querySelector('.profile-info h1').textContent = data.user.username;
+                        document.querySelector('.profile-avatar').textContent = data.user.username[0].toUpperCase();
+                    }
+                }
+            } catch (err) {
+                showToast('Ошибка сохранения', 'error');
+            }
+        });
+
+        // Clear chat
+        async function clearChat() {
+            if (!confirm('Очистить всю историю чата с Luna?')) return;
+            try {
+                await fetch('/api/chat/clear', { method: 'POST' });
+                showToast('История чата очищена');
+            } catch (err) {
+                showToast('Ошибка', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
+

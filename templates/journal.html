@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Journal - MoonLine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #000000;
+            --bg-card: rgba(10, 10, 10, 0.8);
+            --text-white: #ffffff;
+            --text-gray: #888888;
+            --text-muted: #555555;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-mint: #a7f3d0;
+            --accent-teal: #5eead4;
+            --accent-blue: #93c5fd;
+            --glow-mint: rgba(167, 243, 208, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            min-height: 100vh;
+            color: var(--text-white);
+            overflow-x: hidden;
+        }
+
+        /* Background */
+        .bg-layer {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: url('{{ url_for("static", filename="images/backgrounddarktheme.jpg") }}') center/cover no-repeat;
+            opacity: 0.15;
+            z-index: 0;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(ellipse at top, rgba(20, 20, 30, 0.5) 0%, rgba(0, 0, 0, 0.95) 70%);
+            z-index: 1;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 20px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-white);
+            text-decoration: none;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            font-weight: 400;
+            letter-spacing: 0.08em;
+        }
+
+        .nav-logo svg { width: 26px; height: 26px; opacity: 0.9; }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover, .nav-links a.active { color: var(--text-white); }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            padding: 10px 28px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-white);
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 400;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle { display: flex; align-items: center; }
+        .switch { position: relative; display: inline-block; }
+        .switch__input {
+            background-color: #ff8c42;
+            border-radius: 0.75em;
+            outline: transparent;
+            position: relative;
+            width: 3em;
+            height: 1.5em;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .switch__input:checked { background-color: #a7f3d0; }
+        .switch__input:before {
+            content: "";
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: inherit;
+            inset: 0;
+        }
+        .switch__input:after {
+            content: "";
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            top: 0.125em;
+            left: 0.125em;
+            width: 1.25em;
+            height: 1.25em;
+            transition: transform 0.3s ease;
+        }
+        .switch__input:checked:after { transform: translateX(1.5em); }
+        .switch__icon {
+            position: absolute;
+            top: 0.375em;
+            width: 0.75em;
+            height: 0.75em;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .switch__icon--light { right: 0.375em; opacity: 1; }
+        .switch__icon--dark { right: 0.375em; opacity: 0; transform: translateX(-0.75em) rotate(30deg) scale(0.75); }
+        .switch__input:checked ~ .switch__icon--light { opacity: 0; transform: translateX(-0.75em) rotate(-30deg) scale(0.75); }
+        .switch__input:checked ~ .switch__icon--dark { opacity: 1; transform: translateX(-1.5em); }
+
+        /* Light Mode */
+        body.light-mode { background: #f8fafc; color: #1a1a1a; }
+        body.light-mode .bg-layer { opacity: 0.05; }
+        body.light-mode .bg-overlay { background: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.95) 100%); }
+        body.light-mode .navbar { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.05); }
+        body.light-mode .nav-logo, body.light-mode .nav-links a.active { color: #1a1a1a; }
+        body.light-mode .nav-links a { color: #555; }
+        body.light-mode .nav-btn { border-color: rgba(0,0,0,0.1); color: #1a1a1a; }
+        body.light-mode .hero-title { color: #1a1a1a; }
+        body.light-mode .hero-subtitle { color: #555; }
+
+        /* Main Container */
+        .main-container {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            padding-top: 100px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 40px 40px;
+        }
+
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            color: var(--text-white);
+            margin-bottom: 16px;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--text-gray);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 60px 80px;
+        }
+
+        /* Journal Card */
+        .journal-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 35px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-header h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+        }
+
+        .card-date {
+            margin-left: auto;
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+
+        /* Form Sections */
+        .form-section {
+            margin-bottom: 35px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 16px;
+        }
+
+        /* Mood Selector - Minimal */
+        .mood-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .mood-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 10px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mood-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .mood-item.selected {
+            background: rgba(167, 243, 208, 0.08);
+            border-color: var(--accent-mint);
+            box-shadow: 0 0 30px var(--glow-mint);
+        }
+
+        .mood-item .mood-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 0 0 transparent;
+        }
+
+        /* Warm color palette for moods */
+        .mood-great { background: linear-gradient(135deg, #fcd5ce, #ffb4a2); }
+        .mood-good { background: linear-gradient(135deg, #e8c1a0, #f1a66a); }
+        .mood-okay { background: linear-gradient(135deg, #d5bdaf, #c9ada7); }
+        .mood-low { background: linear-gradient(135deg, #b5838d, #9a6676); }
+        .mood-hard { background: linear-gradient(135deg, #6d597a, #5a4a64); }
+
+        .mood-item.selected .mood-circle {
+            transform: scale(1.15);
+            box-shadow: 0 0 25px rgba(255, 180, 162, 0.5);
+        }
+
+        .mood-item .label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .mood-item.selected .label {
+            color: var(--accent-mint);
+        }
+
+        /* Intensity */
+        .intensity-track {
+            position: relative;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin: 20px 0 10px;
+        }
+
+        .intensity-slider {
+            width: 100%;
+            height: 4px;
+            -webkit-appearance: none;
+            background: transparent;
+            position: absolute;
+            top: 0;
+            cursor: pointer;
+        }
+
+        .intensity-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--text-white);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+        }
+
+        .intensity-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* Tags */
+        .tags-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tag-item {
+            padding: 8px 18px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tag-item:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            color: var(--text-white);
+        }
+
+        .tag-item.selected {
+            background: rgba(94, 234, 212, 0.1);
+            border-color: var(--accent-teal);
+            color: var(--accent-teal);
+        }
+
+        /* Textarea */
+        .notes-area {
+            width: 100%;
+            min-height: 140px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            color: var(--text-white);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 300;
+            line-height: 1.7;
+            resize: none;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .notes-area:focus {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .notes-area::placeholder {
+            color: var(--text-muted);
+        }
+
+        .char-counter {
+            text-align: right;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            margin-top: 10px;
+            background: transparent;
+            border: 1px solid var(--accent-mint);
+            border-radius: 12px;
+            color: var(--accent-mint);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .submit-btn:hover {
+            background: var(--accent-mint);
+            color: var(--bg-dark);
+            box-shadow: 0 0 40px var(--glow-mint);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .sidebar-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .sidebar-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            margin-bottom: 24px;
+            color: var(--text-white);
+        }
+
+        /* Moon Container */
+        .moon-container {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        #moon-canvas {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+        }
+
+        .luna-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        .luna-text strong {
+            color: var(--text-white);
+            font-weight: 500;
+        }
+
+        /* Stats */
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stat-row:last-child { border-bottom: none; }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+
+        .stat-value {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            color: var(--text-white);
+        }
+
+        .stat-value.streak {
+            color: var(--accent-teal);
+        }
+
+        /* Week Calendar */
+        .week-row {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .week-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .week-day .day-name {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .week-day .day-num {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        .week-day.has-entry {
+            background: rgba(94, 234, 212, 0.1);
+            border-color: rgba(94, 234, 212, 0.3);
+        }
+
+        .week-day.has-entry .day-num {
+            color: var(--accent-teal);
+        }
+
+        .week-day.today {
+            border-color: var(--text-white);
+        }
+
+        .week-day.today .day-num {
+            color: var(--text-white);
+        }
+
+        /* Past Entries */
+        .entries-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 60px 80px;
+        }
+
+        .entries-header {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            margin-bottom: 30px;
+            color: var(--text-white);
+        }
+
+        .entries-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .entry-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .entry-item:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateX(4px);
+        }
+
+        .entry-mood-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .entry-mood-5 { background: linear-gradient(135deg, #fcd5ce, #ffb4a2); }
+        .entry-mood-4 { background: linear-gradient(135deg, #e8c1a0, #f1a66a); }
+        .entry-mood-3 { background: linear-gradient(135deg, #d5bdaf, #c9ada7); }
+        .entry-mood-2 { background: linear-gradient(135deg, #b5838d, #9a6676); }
+        .entry-mood-1 { background: linear-gradient(135deg, #6d597a, #5a4a64); }
+
+        .entry-content {
+            flex: 1;
+        }
+
+        .entry-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+
+        .entry-note {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .entry-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .entry-tag {
+            padding: 4px 12px;
+            background: rgba(147, 197, 253, 0.1);
+            border-radius: 12px;
+            font-size: 0.7rem;
+            color: var(--accent-blue);
+        }
+
+        /* Demo Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 50px;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin-bottom: 16px;
+        }
+
+        .modal-text {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .modal-preview {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .preview-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+
+        .modal-cta {
+            display: inline-block;
+            padding: 14px 40px;
+            background: var(--accent-mint);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-cta:hover {
+            box-shadow: 0 0 40px var(--glow-mint);
+            transform: translateY(-2px);
+        }
+
+        .modal-close {
+            display: block;
+            margin-top: 16px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .modal-close:hover { color: var(--text-gray); }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                padding: 40px 40px 60px;
+            }
+            .sidebar {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar { padding: 15px 20px; }
+            .nav-links { display: none; }
+            .content-grid { padding: 20px; }
+            .journal-card { padding: 25px; }
+            .mood-row { flex-wrap: wrap; }
+            .mood-item { flex: 0 0 calc(33.33% - 8px); }
+            .sidebar { grid-template-columns: 1fr; }
+            .entries-section { padding: 0 20px 60px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-overlay"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/" class="nav-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+            MoonLine
+        </a>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/luna-ai">Luna AI</a></li>
+            <li><a href="/toolkit">Toolkit</a></li>
+            <li><a href="/journal" class="active">Journal</a></li>
+            <li><a href="/pricing">Pricing</a></li>
+        </ul>
+        <div class="nav-right">
+            <div class="theme-toggle">
+                <label class="switch">
+                    <input class="switch__input" type="checkbox" role="switch" id="theme-switch">
+                    <svg class="switch__icon switch__icon--light" viewBox="0 0 12 12" width="12px" height="12px">
+                        <g fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round">
+                            <circle cx="6" cy="6" r="2" />
+                            <g stroke-dasharray="1.5 1.5">
+                                <polyline points="6 10,6 11.5" transform="rotate(0,6,6)" />
+                                <polyline points="6 10,6 11.5" transform="rotate(45,6,6)" />
+                                <polyline points="6 10,6 11.5" transform="rotate(90,6,6)" />
+                                <polyline points="6 10,6 11.5" transform="rotate(135,6,6)" />
+                                <polyline points="6 10,6 11.5" transform="rotate(180,6,6)" />
+                                <polyline points="6 10,6 11.5" transform="rotate(225,6,6)" />
+                                <polyline points="6 10,6 11.5" transform="rotate(270,6,6)" />
+                                <polyline points="6 10,6 11.5" transform="rotate(315,6,6)" />
+                            </g>
+                        </g>
+                    </svg>
+                    <svg class="switch__icon switch__icon--dark" viewBox="0 0 12 12" width="12px" height="12px">
+                        <g fill="none" stroke="#fff" stroke-width="1" stroke-linejoin="round" transform="rotate(-45,6,6)">
+                            <path d="m9,10c-2.209,0-4-1.791-4-4s1.791-4,4-4c.304,0,.598.041.883.105-.995-.992-2.367-1.605-3.883-1.605C2.962.5.5,2.962.5,6s2.462,5.5,5.5,5.5c1.516,0,2.888-.613,3.883-1.605-.285.064-.578.105-.883.105Z"/>
+                        </g>
+                    </svg>
+                </label>
+            </div>
+            {% if logged_in %}
+            <a href="/dashboard" class="nav-btn">Dashboard</a>
+            {% else %}
+            <a href="/" class="nav-btn">Sign In</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <!-- Hero -->
+        <section class="hero">
+            <h1 class="hero-title">Journal</h1>
+            <p class="hero-subtitle">Track your inner world</p>
+        </section>
+
+        <!-- Content -->
+        <div class="content-grid">
+            <!-- Journal Form -->
+            <div class="journal-card">
+                <div class="card-header">
+                    <h2>New Entry</h2>
+                    <span class="card-date" id="currentDate"></span>
+                </div>
+
+                <form id="journalForm">
+                    <div class="form-section">
+                        <label class="form-label">How do you feel?</label>
+                        <div class="mood-row" id="moodSelector">
+                            <div class="mood-item" data-mood="5" onclick="selectMood(5)">
+                                <span class="mood-circle mood-great"></span>
+                                <span class="label">Great</span>
+                            </div>
+                            <div class="mood-item" data-mood="4" onclick="selectMood(4)">
+                                <span class="mood-circle mood-good"></span>
+                                <span class="label">Good</span>
+                            </div>
+                            <div class="mood-item" data-mood="3" onclick="selectMood(3)">
+                                <span class="mood-circle mood-okay"></span>
+                                <span class="label">Okay</span>
+                            </div>
+                            <div class="mood-item" data-mood="2" onclick="selectMood(2)">
+                                <span class="mood-circle mood-low"></span>
+                                <span class="label">Low</span>
+                            </div>
+                            <div class="mood-item" data-mood="1" onclick="selectMood(1)">
+                                <span class="mood-circle mood-hard"></span>
+                                <span class="label">Hard</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label">Intensity</label>
+                        <div class="intensity-track">
+                            <input type="range" class="intensity-slider" min="1" max="10" value="5" id="intensitySlider">
+                        </div>
+                        <div class="intensity-labels">
+                            <span>Mild</span>
+                            <span>Intense</span>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label">Tags</label>
+                        <div class="tags-grid" id="tagsContainer">
+                            <span class="tag-item" data-tag="anxious" onclick="toggleTag(this)">anxious</span>
+                            <span class="tag-item" data-tag="happy" onclick="toggleTag(this)">happy</span>
+                            <span class="tag-item" data-tag="stressed" onclick="toggleTag(this)">stressed</span>
+                            <span class="tag-item" data-tag="calm" onclick="toggleTag(this)">calm</span>
+                            <span class="tag-item" data-tag="tired" onclick="toggleTag(this)">tired</span>
+                            <span class="tag-item" data-tag="grateful" onclick="toggleTag(this)">grateful</span>
+                            <span class="tag-item" data-tag="lonely" onclick="toggleTag(this)">lonely</span>
+                            <span class="tag-item" data-tag="motivated" onclick="toggleTag(this)">motivated</span>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <label class="form-label">Notes</label>
+                        <textarea class="notes-area" id="notesArea" placeholder="What's on your mind today?" maxlength="500"></textarea>
+                        <div class="char-counter"><span id="charCount">0</span> / 500</div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Save Entry</button>
+                </form>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Luna Card -->
+                <div class="sidebar-card">
+                    <div class="moon-container">
+                        <canvas id="moon-canvas"></canvas>
+                    </div>
+                    <p class="luna-text">
+                        <strong>Luna is here</strong><br>
+                        Your feelings matter. Every entry helps you understand yourself better.
+                    </p>
+                </div>
+
+                <!-- Stats Card -->
+                {% if logged_in and stats %}
+                <div class="sidebar-card">
+                    <h3 class="sidebar-title">Your Stats</h3>
+                    <div class="stat-row">
+                        <span class="stat-label">Total Entries</span>
+                        <span class="stat-value">{{ stats.total_entries or 0 }}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Streak</span>
+                        <span class="stat-value streak">{{ stats.streak or 0 }} days</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Mood</span>
+                        <span class="stat-value">{{ '%.1f'|format(stats.avg_mood) if stats.avg_mood else '—' }}</span>
+                    </div>
+                </div>
+                {% else %}
+                <div class="sidebar-card">
+                    <h3 class="sidebar-title">Your Stats</h3>
+                    <p style="color: var(--text-gray); font-size: 0.85rem; line-height: 1.6;">
+                        Sign in to track your mood patterns over time.
+                    </p>
+                    <a href="/" class="submit-btn" style="display: block; text-align: center; margin-top: 20px; text-decoration: none;">Get Started</a>
+                </div>
+                {% endif %}
+
+                <!-- Week Card -->
+                <div class="sidebar-card">
+                    <h3 class="sidebar-title">This Week</h3>
+                    <div class="week-row" id="weekGrid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Past Entries -->
+        {% if logged_in and entries %}
+        <section class="entries-section">
+            <h2 class="entries-header">Past Entries</h2>
+            <div class="entries-list">
+                {% for entry in entries[:5] %}
+                <div class="entry-item">
+                    <div class="entry-mood-circle entry-mood-{{ entry.mood }}"></div>
+                    <div class="entry-content">
+                        <div class="entry-date">{{ entry.created_at }}</div>
+                        <p class="entry-note">{{ entry.note or 'No notes' }}</p>
+                        {% if entry.tags %}
+                        <div class="entry-tags">
+                            {% for tag in entry.tags.split(',') %}
+                            <span class="entry-tag">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Footer -->
+        <footer class="footer">
+            © 2024 MoonLine — Your mental wellness companion
+        </footer>
+    </div>
+
+    <!-- Demo Modal -->
+    <div class="modal-overlay" id="demoModal">
+        <div class="modal-card">
+            <h3 class="modal-title">Preview Mode</h3>
+            <p class="modal-text">This entry wasn't saved. Sign up free to start tracking your emotional journey.</p>
+            <div class="modal-preview">
+                <div class="preview-row">
+                    <span>📅</span>
+                    <span id="previewDate">Today</span>
+                </div>
+                <div class="preview-row">
+                    <span id="previewMood">😊</span>
+                    <span>Mood: <span id="previewMoodText">Good</span></span>
+                </div>
+                <div class="preview-row">
+                    <span>📝</span>
+                    <span id="previewNote">Your notes...</span>
+                </div>
+            </div>
+            <a href="/" class="modal-cta">Create Free Account</a>
+            <button class="modal-close" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const isLoggedIn = {{ 'true' if logged_in else 'false' }};
+        let selectedMood = null;
+        let selectedTags = [];
+
+        // Set current date
+        const today = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', options);
+
+        // Initialize week grid
+        function initWeekGrid() {
+            const grid = document.getElementById('weekGrid');
+            const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+            const currentDay = today.getDay() || 7;
+
+            for (let i = 1; i <= 7; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() - currentDay + i);
+
+                const dayEl = document.createElement('div');
+                dayEl.className = 'week-day' + (i === currentDay ? ' today' : '');
+                dayEl.innerHTML = `
+                    <span class="day-name">${days[i-1]}</span>
+                    <span class="day-num">${date.getDate()}</span>
+                `;
+                grid.appendChild(dayEl);
+            }
+        }
+        initWeekGrid();
+
+        // 3D Moon
+        function initMoon() {
+            const canvas = document.getElementById('moon-canvas');
+            if (!canvas) return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setSize(180, 180);
+
+            const geometry = new THREE.SphereGeometry(1, 32, 32);
+            const material = new THREE.MeshStandardMaterial({
+                color: 0xe8e8e8,
+                roughness: 0.7,
+                metalness: 0.1,
+                emissive: 0xe8e8e8,
+                emissiveIntensity: 0.05
+            });
+            const moon = new THREE.Mesh(geometry, material);
+            scene.add(moon);
+
+            const light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(5, 3, 5);
+            scene.add(light);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+
+            const glowGeometry = new THREE.SphereGeometry(1.15, 32, 32);
+            const glowMaterial = new THREE.MeshBasicMaterial({
+                color: 0xa7f3d0,
+                transparent: true,
+                opacity: 0.08,
+                side: THREE.BackSide
+            });
+            scene.add(new THREE.Mesh(glowGeometry, glowMaterial));
+
+            camera.position.z = 2.5;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                moon.rotation.y += 0.003;
+                const scale = 1 + Math.sin(Date.now() * 0.001) * 0.02;
+                moon.scale.set(scale, scale, scale);
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+        initMoon();
+
+        // Mood selection
+        function selectMood(mood) {
+            selectedMood = mood;
+            document.querySelectorAll('.mood-item').forEach(item => {
+                item.classList.toggle('selected', parseInt(item.dataset.mood) === mood);
+            });
+        }
+
+        // Tag toggle
+        function toggleTag(el) {
+            const tag = el.dataset.tag;
+            if (selectedTags.includes(tag)) {
+                selectedTags = selectedTags.filter(t => t !== tag);
+                el.classList.remove('selected');
+            } else {
+                selectedTags.push(tag);
+                el.classList.add('selected');
+            }
+        }
+
+        // Character counter
+        document.getElementById('notesArea').addEventListener('input', function() {
+            document.getElementById('charCount').textContent = this.value.length;
+        });
+
+        // Form submit
+        document.getElementById('journalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!selectedMood) {
+                alert('Please select how you feel');
+                return;
+            }
+
+            const note = document.getElementById('notesArea').value;
+            const intensity = document.getElementById('intensitySlider').value;
+
+            if (isLoggedIn) {
+                try {
+                    const response = await fetch('/api/mood', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            mood: selectedMood,
+                            note: note,
+                            intensity: intensity,
+                            tags: selectedTags.join(',')
+                        })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        location.reload();
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            } else {
+                showDemoModal();
+            }
+        });
+
+        function showDemoModal() {
+            const moodEmojis = { 5: '😊', 4: '🙂', 3: '😐', 2: '😔', 1: '😢' };
+            const moodTexts = { 5: 'Great', 4: 'Good', 3: 'Okay', 2: 'Low', 1: 'Hard' };
+
+            document.getElementById('previewDate').textContent = today.toLocaleDateString();
+            document.getElementById('previewMood').textContent = moodEmojis[selectedMood];
+            document.getElementById('previewMoodText').textContent = moodTexts[selectedMood];
+            document.getElementById('previewNote').textContent = document.getElementById('notesArea').value || 'No notes';
+
+            document.getElementById('demoModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('demoModal').classList.remove('active');
+        }
+
+        // Theme toggle
+        const themeSwitch = document.getElementById('theme-switch');
+        const savedTheme = localStorage.getItem('moonline-theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            themeSwitch.checked = true;
+        }
+        themeSwitch.addEventListener('change', () => {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('moonline-theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        });
+    </script>
+</body>
+</html>
+

@@ -8,13 +8,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
-            --bg-dark: #0D0D1A;
-            --bg-card: rgba(20, 20, 40, 0.85);
-            --accent-glow: #a78bfa;
-            --accent-lavender: #C9B6E4;
-            --text-light: #F0F0F0;
-            --text-muted: #94A3B8;
+            --bg-dark: #000000;
+            --bg-card: rgba(15, 15, 15, 0.9);
+            --text-light: #ffffff;
+            --text-muted: #888888;
+            --border-color: rgba(255, 255, 255, 0.1);
             --online-green: #4ade80;
+            --spark-transition: 0.25s;
+            --spark: 1.8s;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -33,19 +34,18 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: 0;
-            transition: opacity 0.5s ease;
         }
 
         .bg-dark-theme {
             background: url('{{ url_for("static", filename="images/backgrounddarktheme.jpg") }}') center/cover no-repeat;
-            opacity: 1;
+            opacity: 0.3;
         }
 
         .bg-overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: linear-gradient(180deg, rgba(13, 13, 26, 0.7) 0%, rgba(13, 13, 26, 0.9) 100%);
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.95) 100%);
             z-index: 1;
         }
 
@@ -62,7 +62,7 @@
             width: 280px;
             background: var(--bg-card);
             backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(167, 139, 250, 0.1);
+            border-right: 1px solid var(--border-color);
             padding: 30px 20px;
             display: flex;
             flex-direction: column;
@@ -83,9 +83,7 @@
             font-size: 2rem;
             font-weight: 400;
             letter-spacing: 0.1em;
-            background: linear-gradient(135deg, var(--accent-glow), var(--accent-lavender));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-light);
         }
 
         .logo span {
@@ -115,28 +113,99 @@
         }
 
         .nav-item:hover {
-            background: rgba(167, 139, 250, 0.1);
+            background: rgba(255, 255, 255, 0.05);
             color: var(--text-light);
         }
 
         .nav-item.active {
-            background: linear-gradient(135deg, rgba(167, 139, 250, 0.2), rgba(201, 182, 228, 0.2));
+            background: rgba(255, 255, 255, 0.1);
             color: var(--text-light);
-            border: 1px solid rgba(167, 139, 250, 0.3);
+            border: 1px solid var(--border-color);
         }
 
         .nav-icon {
-            font-size: 1.2rem;
             width: 24px;
-            text-align: center;
+            height: 24px;
         }
+
+        .nav-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Theme Toggle in sidebar */
+        .theme-section {
+            padding: 15px 20px;
+            margin-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .theme-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .theme-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .switch { position: relative; display: inline-block; }
+        .switch__input {
+            background-color: #ff8c42;
+            border-radius: 0.75em;
+            outline: transparent;
+            position: relative;
+            width: 3em;
+            height: 1.5em;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .switch__input:checked { background-color: #a7f3d0; }
+        .switch__input:before {
+            content: "";
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: inherit;
+            inset: 0;
+        }
+        .switch__input:after {
+            content: "";
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            top: 0.125em;
+            left: 0.125em;
+            width: 1.25em;
+            height: 1.25em;
+            transition: transform 0.3s ease;
+        }
+        .switch__input:checked:after { transform: translateX(1.5em); }
+
+        /* Light Mode */
+        body.light-mode { background: #f8fafc; }
+        body.light-mode .bg-overlay { background: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.95) 100%); }
+        body.light-mode .sidebar { background: rgba(255,255,255,0.9); border-color: rgba(0,0,0,0.08); }
+        body.light-mode .logo h1, body.light-mode .page-header h1 { color: #1a1a1a; }
+        body.light-mode .logo span, body.light-mode .page-header p { color: #555; }
+        body.light-mode .nav-item { color: #555; }
+        body.light-mode .nav-item:hover, body.light-mode .nav-item.active { color: #1a1a1a; background: rgba(0,0,0,0.05); }
+        body.light-mode .stat-card, body.light-mode .weekly-section, body.light-mode .action-card { background: rgba(255,255,255,0.9); border-color: rgba(0,0,0,0.08); }
+        body.light-mode .stat-card h3 { color: #555; }
+        body.light-mode .stat-value { color: #1a1a1a; }
+        body.light-mode .user-section { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.08); }
+        body.light-mode .user-details h4 { color: #1a1a1a; }
+        body.light-mode .user-avatar { background: #1a1a1a; color: #fff; }
 
         /* User Section */
         .user-section {
             padding: 20px;
-            background: rgba(167, 139, 250, 0.08);
+            background: rgba(255, 255, 255, 0.03);
             border-radius: 16px;
-            border: 1px solid rgba(167, 139, 250, 0.15);
+            border: 1px solid var(--border-color);
         }
 
         .user-info {
@@ -149,7 +218,7 @@
         .user-avatar {
             width: 45px; height: 45px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-glow), var(--accent-lavender));
+            background: var(--text-light);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -172,7 +241,7 @@
             width: 100%;
             padding: 10px;
             background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             color: var(--text-muted);
             font-family: 'Poppins', sans-serif;
@@ -227,12 +296,12 @@
             backdrop-filter: blur(20px);
             border-radius: 16px;
             padding: 24px;
-            border: 1px solid rgba(167, 139, 250, 0.1);
+            border: 1px solid var(--border-color);
             transition: all 0.3s ease;
         }
 
         .stat-card:hover {
-            border-color: rgba(167, 139, 250, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
         }
 
@@ -246,7 +315,7 @@
         .stat-card .stat-value {
             font-size: 2rem;
             font-weight: 600;
-            color: var(--accent-glow);
+            color: var(--text-light);
         }
 
         /* Weekly Calendar */
@@ -255,7 +324,7 @@
             backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 30px;
-            border: 1px solid rgba(167, 139, 250, 0.1);
+            border: 1px solid var(--border-color);
             margin-bottom: 40px;
         }
 
@@ -275,19 +344,19 @@
             border-radius: 12px;
             padding: 15px 10px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .day-card:hover {
-            background: rgba(167, 139, 250, 0.1);
-            border-color: rgba(167, 139, 250, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         .day-card.today {
-            background: rgba(167, 139, 250, 0.15);
-            border-color: rgba(167, 139, 250, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         .day-card .day-name {
@@ -313,15 +382,14 @@
             backdrop-filter: blur(20px);
             border-radius: 16px;
             padding: 25px;
-            border: 1px solid rgba(167, 139, 250, 0.1);
+            border: 1px solid var(--border-color);
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .action-card:hover {
-            border-color: rgba(167, 139, 250, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
             transform: translateY(-4px);
-            box-shadow: 0 10px 40px rgba(167, 139, 250, 0.15);
         }
 
         .action-card h3 {
@@ -366,7 +434,7 @@
             margin: 0 auto 20px;
             border-radius: 50%;
             overflow: hidden;
-            box-shadow: 0 0 60px rgba(167, 139, 250, 0.4);
+            box-shadow: 0 0 60px rgba(255, 255, 255, 0.3);
         }
 
         #moon-canvas {
@@ -406,7 +474,7 @@
             background: var(--bg-card);
             backdrop-filter: blur(20px);
             border-radius: 20px;
-            border: 1px solid rgba(167, 139, 250, 0.1);
+            border: 1px solid var(--border-color);
             overflow: hidden;
         }
 
@@ -424,7 +492,7 @@
         }
 
         .chat-messages::-webkit-scrollbar-thumb {
-            background: rgba(167, 139, 250, 0.3);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 3px;
         }
 
@@ -438,7 +506,7 @@
 
         .message.user {
             align-self: flex-end;
-            background: var(--accent-glow);
+            background: var(--text-light);
             color: #000;
             border-bottom-right-radius: 4px;
         }
@@ -446,22 +514,23 @@
         .message.luna {
             align-self: flex-start;
             background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
             border-bottom-left-radius: 4px;
         }
 
         .chat-input-area {
             padding: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border-color);
             display: flex;
             gap: 12px;
+            align-items: center;
         }
 
         .chat-input {
             flex: 1;
             padding: 14px 18px;
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             color: var(--text-light);
             font-family: 'Poppins', sans-serif;
@@ -471,28 +540,125 @@
         }
 
         .chat-input:focus {
-            border-color: var(--accent-glow);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         .chat-input::placeholder {
             color: var(--text-muted);
         }
 
-        .send-btn {
-            padding: 14px 24px;
-            background: var(--accent-glow);
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        /* ===== SPARKLE SEND BUTTON (Purple Glow) ===== */
+        .sparkle-button {
+            position: relative;
         }
 
-        .send-btn:hover {
-            box-shadow: 0 0 30px rgba(167, 139, 250, 0.4);
-            transform: translateY(-2px);
+        .sparkle-button button {
+            --cut: 0.1em;
+            --active: 0;
+            --bg: radial-gradient(
+                    40% 50% at center 100%,
+                    hsl(270 calc(var(--active) * 97%) 72% / var(--active)),
+                    transparent
+                ),
+                radial-gradient(
+                    80% 100% at center 120%,
+                    hsl(260 calc(var(--active) * 97%) 70% / var(--active)),
+                    transparent
+                ),
+                hsl(260 calc(var(--active) * 97%) calc((var(--active) * 44%) + 12%));
+            background: var(--bg);
+            font-size: 0.95rem;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            border: 0;
+            cursor: pointer;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            gap: 0.25em;
+            white-space: nowrap;
+            border-radius: 12px;
+            position: relative;
+            box-shadow:
+                0 0 calc(var(--active) * 4em) calc(var(--active) * 1.5em) hsl(260 97% 61% / 0.75),
+                0 0.05em 0 0 hsl(260 calc(var(--active) * 97%) calc((var(--active) * 50%) + 30%)) inset,
+                0 -0.05em 0 0 hsl(260 calc(var(--active) * 97%) calc(var(--active) * 60%)) inset;
+            transition: box-shadow var(--spark-transition), scale var(--spark-transition), background var(--spark-transition);
+            scale: calc(1 + (var(--active) * 0.05));
+            overflow: visible;
+        }
+
+        .sparkle-button button:active {
+            scale: 1;
+        }
+
+        .sparkle-button button:is(:hover, :focus-visible) {
+            --active: 1;
+            --play-state: running;
+        }
+
+        .sparkle-button button:before {
+            content: "";
+            position: absolute;
+            inset: -0.15em;
+            z-index: -1;
+            border: 0.15em solid hsl(260 97% 50% / 0.5);
+            border-radius: 12px;
+            opacity: var(--active, 0);
+            transition: opacity var(--spark-transition);
+        }
+
+        .sparkle-button .spark {
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            rotate: 0deg;
+            overflow: hidden;
+            mask: linear-gradient(white, transparent 50%);
+            animation: spark-flip calc(var(--spark) * 2) infinite steps(2, end);
+        }
+
+        @keyframes spark-flip {
+            to { rotate: 360deg; }
+        }
+
+        .sparkle-button .spark:before {
+            content: "";
+            position: absolute;
+            width: 200%;
+            aspect-ratio: 1;
+            top: 0%;
+            left: 50%;
+            z-index: -1;
+            translate: -50% -15%;
+            rotate: 0;
+            transform: rotate(-90deg);
+            opacity: calc((var(--active)) + 0.4);
+            background: conic-gradient(from 0deg, transparent 0 340deg, white 360deg);
+            transition: opacity var(--spark-transition);
+            animation: spark-rotate var(--spark) linear infinite both;
+        }
+
+        @keyframes spark-rotate {
+            to { transform: rotate(90deg); }
+        }
+
+        .sparkle-button .backdrop {
+            position: absolute;
+            inset: var(--cut);
+            background: var(--bg);
+            border-radius: 12px;
+            transition: background var(--spark-transition);
+        }
+
+        .sparkle-button .btn-text {
+            translate: 0 -2%;
+            letter-spacing: 0.01ch;
+            background: linear-gradient(90deg, hsl(0 0% calc((var(--active) * 100%) + 65%)), hsl(0 0% calc((var(--active) * 100%) + 26%)));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            transition: background var(--spark-transition);
         }
 
         /* Responsive */
@@ -531,27 +697,36 @@
             </div>
 
             <nav class="nav-menu">
-                <div class="nav-item active" data-page="home">
-                    <span class="nav-icon">🏠</span>
+                <a href="/dashboard" class="nav-item active">
+                    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
                     <span>Home</span>
-                </div>
-                <div class="nav-item" data-page="luna">
-                    <span class="nav-icon">🌙</span>
+                </a>
+                <a href="/luna-ai" class="nav-item">
+                    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
                     <span>Luna AI</span>
-                </div>
-                <div class="nav-item" data-page="journal">
-                    <span class="nav-icon">📔</span>
+                </a>
+                <a href="/journal" class="nav-item">
+                    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
                     <span>Journal</span>
-                </div>
-                <div class="nav-item" data-page="progress">
-                    <span class="nav-icon">📊</span>
-                    <span>Progress</span>
-                </div>
-                <div class="nav-item" data-page="exercises">
-                    <span class="nav-icon">🧘</span>
-                    <span>Anti-stress</span>
-                </div>
+                </a>
+                <a href="/toolkit" class="nav-item">
+                    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+                    <span>Toolkit</span>
+                </a>
+                <a href="/pricing" class="nav-item">
+                    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></span>
+                    <span>Pricing</span>
+                </a>
             </nav>
+
+            <div class="theme-section">
+                <div class="theme-toggle-row">
+                    <span class="theme-label">Theme</span>
+                    <label class="switch">
+                        <input class="switch__input" type="checkbox" role="switch" id="theme-switch">
+                    </label>
+                </div>
+            </div>
 
             <div class="user-section">
                 <div class="user-info">
@@ -630,7 +805,13 @@
                         </div>
                         <div class="chat-input-area">
                             <input type="text" class="chat-input" id="chat-input" placeholder="Write a message...">
-                            <button class="send-btn" id="send-btn">Send</button>
+                            <div class="sparkle-button">
+                                <button type="button" id="send-btn">
+                                    <span class="spark"></span>
+                                    <span class="backdrop"></span>
+                                    <span class="btn-text">Send</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -668,19 +849,19 @@
                 </div>
                 <div class="quick-actions">
                     <div class="action-card">
-                        <h3>🧘 Breathing</h3>
+                        <h3>Breathing</h3>
                         <p>Calming breathing exercises</p>
                     </div>
                     <div class="action-card">
-                        <h3>🎮 Mini games</h3>
+                        <h3>Mini games</h3>
                         <p>Relaxing puzzles</p>
                     </div>
                     <div class="action-card">
-                        <h3>🎵 Sounds</h3>
+                        <h3>Sounds</h3>
                         <p>Relaxing ambient sounds</p>
                     </div>
                     <div class="action-card">
-                        <h3>📝 Gratitude</h3>
+                        <h3>Gratitude</h3>
                         <p>Daily gratitude journal</p>
                     </div>
                 </div>
@@ -726,7 +907,7 @@
             });
         }
 
-        // 3D Moon
+        // 3D Moon - WHITE/SILVER color
         function initMoon() {
             const canvas = document.getElementById('moon-canvas');
             if (!canvas) return;
@@ -738,10 +919,11 @@
 
             const geometry = new THREE.SphereGeometry(1, 32, 32);
             const material = new THREE.MeshStandardMaterial({
-                color: 0xa78bfa,
-                roughness: 0.8,
-                emissive: 0xa78bfa,
-                emissiveIntensity: 0.1
+                color: 0xe8e8e8,  // Silver/white
+                roughness: 0.7,
+                metalness: 0.1,
+                emissive: 0xe8e8e8,
+                emissiveIntensity: 0.05
             });
             const moon = new THREE.Mesh(geometry, material);
             scene.add(moon);
@@ -749,7 +931,18 @@
             const light = new THREE.DirectionalLight(0xffffff, 1);
             light.position.set(5, 3, 5);
             scene.add(light);
-            scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+            scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+
+            // Glow - white
+            const glowGeometry = new THREE.SphereGeometry(1.1, 32, 32);
+            const glowMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.1,
+                side: THREE.BackSide
+            });
+            const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+            scene.add(glow);
 
             camera.position.z = 2.5;
 
@@ -818,6 +1011,18 @@
             initWeekGrid();
             initMoon();
             loadHistory();
+
+            // Theme toggle
+            const themeSwitch = document.getElementById('theme-switch');
+            const savedTheme = localStorage.getItem('moonline-theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeSwitch.checked = true;
+            }
+            themeSwitch.addEventListener('change', () => {
+                document.body.classList.toggle('light-mode');
+                localStorage.setItem('moonline-theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+            });
         });
     </script>
 </body>

@@ -106,12 +106,11 @@ def get_ai_response(message, user_id, context_type="chat"):
         try:
             genai.configure(api_key=api_key)
 
-            # Пробуем разные модели
+            # Пробуем разные модели (актуальные названия)
             models_to_try = [
-                'gemini-2.0-flash-exp',
-                'gemini-1.5-flash',
-                'gemini-1.5-pro',
-                'gemini-pro'
+                'models/gemini-2.5-flash-lite',
+                'models/gemini-2.5-flash-preview-09-2025',
+                'models/gemini-flash-lite-latest',
             ]
 
             for model_name in models_to_try:
@@ -121,8 +120,8 @@ def get_ai_response(message, user_id, context_type="chat"):
                         full_prompt,
                         generation_config={
                             'temperature': 0.8,
-                            'max_output_tokens': 1024,  # Увеличил для полных ответов
-                            'top_p': 0.9,
+                            'max_output_tokens': 1024,
+                            'top_p': 0.9
                         }
                     )
 
@@ -141,10 +140,15 @@ def get_ai_response(message, user_id, context_type="chat"):
                     continue
 
         except Exception as e:
-            print(f"API Key {current_api_key_index} ошибка: {e}")
+            error_msg = str(e)
+            print(f"API Key {current_api_key_index} ошибка: {error_msg}")
+            # Проверяем на leaked/permission ошибки
+            if 'leaked' in error_msg.lower() or 'permission' in error_msg.lower() or '403' in error_msg:
+                print(f"⚠️ API Key {current_api_key_index} заблокирован как утекший!")
             current_api_key_index = (current_api_key_index + 1) % len(API_KEYS)
 
-    return "Извини, у меня небольшие технические трудности. Попробуй ещё раз через минутку 🌙"
+    # Если все ключи не работают - используем простой fallback
+    return get_simple_response(message)
 
 
 def analyze_mood_with_ai(mood_value, note, user_id):
@@ -255,7 +259,52 @@ def dashboard():
     """Dashboard"""
     user = get_user_by_id(session['user_id'])
     stats = get_mood_stats(session['user_id'])
-    return render_template('dashboard.html', user=user, stats=stats, username=user['username'])
+    history = get_chat_history(session['user_id'], limit=3)
+    entries = get_mood_entries(session['user_id'], limit=5)
+    return render_template('dashboard.html', user=user, stats=stats, username=user['username'],
+                           chat_history=history, recent_entries=entries)
+
+
+@app.route('/luna-ai')
+def luna_ai():
+    """Luna AI страница - доступна всем"""
+    user = None
+    history = []
+    if 'user_id' in session:
+        user = get_user_by_id(session['user_id'])
+        history = get_chat_history(session['user_id'])
+    return render_template('luna_ai.html', user=user, history=history, logged_in='user_id' in session)
+
+
+@app.route('/toolkit')
+def toolkit():
+    """Self-Care Toolkit страница - доступна всем"""
+    user = None
+    if 'user_id' in session:
+        user = get_user_by_id(session['user_id'])
+    return render_template('toolkit.html', user=user, logged_in='user_id' in session)
+
+
+@app.route('/journal')
+def journal():
+    """Emotion Journal страница - доступна всем"""
+    user = None
+    entries = []
+    stats = {}
+    if 'user_id' in session:
+        user = get_user_by_id(session['user_id'])
+        entries = get_mood_entries(session['user_id'])
+        stats = get_mood_stats(session['user_id'])
+    return render_template('journal.html', user=user, entries=entries, stats=stats, logged_in='user_id' in session)
+
+
+@app.route('/pricing')
+def pricing():
+    """Pricing страница"""
+    user = None
+    if 'user_id' in session:
+        user = get_user_by_id(session['user_id'])
+    return render_template('pricing.html', user=user, logged_in='user_id' in session)
 
 
 @app.route('/profile')
@@ -271,7 +320,7 @@ def profile():
 @app.route('/mood')
 @login_required
 def mood():
-    """Дневник эмоций"""
+    """Дневник эмоций (старая версия)"""
     user = get_user_by_id(session['user_id'])
     entries = get_mood_entries(session['user_id'])
     stats = get_mood_stats(session['user_id'])
@@ -281,7 +330,7 @@ def mood():
 @app.route('/chat')
 @login_required
 def chat():
-    """Чат с Luna AI"""
+    """Чат с Luna AI (старая версия)"""
     user = get_user_by_id(session['user_id'])
     history = get_chat_history(session['user_id'])
     return render_template('chat.html', user=user, history=history)
@@ -290,7 +339,7 @@ def chat():
 @app.route('/exercises')
 @login_required
 def exercises():
-    """Антистресс практики"""
+    """Антистресс практики (старая версия)"""
     user = get_user_by_id(session['user_id'])
     return render_template('exercises.html', user=user)
 
@@ -300,7 +349,7 @@ def exercises():
 @app.route('/api/chat', methods=['POST'])
 @login_required
 def api_chat():
-    """API чата с Luna"""
+    """API чата с Luna (для авторизованных)"""
     try:
         data = request.json
         message = data.get('message', '').strip()
@@ -319,6 +368,121 @@ def api_chat():
     except Exception as e:
         print(f"Chat API error: {e}")
         return jsonify({'success': False, 'message': str(e)})
+
+
+@app.route('/api/chat/guest', methods=['POST'])
+def api_chat_guest():
+    """API чата для гостей (лимит 5 сообщений)"""
+    try:
+        data = request.json
+        message = data.get('message', '').strip()
+        guest_history = data.get('history', [])
+
+        if not message:
+            return jsonify({'success': False, 'message': 'Пустое сообщение'})
+
+        # Простой AI ответ для гостей (без сохранения в БД)
+        if not AI_AVAILABLE:
+            response = get_simple_response(message)
+        else:
+            # Формируем контекст для гостя
+            context_parts = [LUNA_SYSTEM_PROMPT]
+            context_parts.append("\n--- ИСТОРИЯ РАЗГОВОРА ---")
+
+            for msg in guest_history[-6:]:  # Последние 6 сообщений
+                role = "Пользователь" if msg.get('role') == 'user' else "Luna"
+                context_parts.append(f"{role}: {msg.get('content', '')}")
+
+            context_parts.append(f"\nПользователь: {message}")
+            context_parts.append("\nLuna:")
+
+            full_prompt = "\n".join(context_parts)
+
+            try:
+                api_key = API_KEYS[current_api_key_index]
+                if api_key:
+                    genai.configure(api_key=api_key)
+                    model = genai.GenerativeModel('models/gemini-2.5-flash-lite')
+                    result = model.generate_content(
+                        full_prompt,
+                        generation_config={'temperature': 0.8, 'max_output_tokens': 512}
+                    )
+                    response = result.text.strip() if result and result.text else get_simple_response(message)
+                else:
+                    response = get_simple_response(message)
+            except:
+                response = get_simple_response(message)
+
+        return jsonify({
+            'success': True,
+            'response': response,
+            'timestamp': datetime.now().isoformat()
+        })
+
+    except Exception as e:
+        print(f"Guest Chat API error: {e}")
+        return jsonify({'success': False, 'message': str(e)})
+
+
+def get_simple_response(message):
+    """Простые ответы для демо режима - умный pattern matching"""
+    message_lower = message.lower()
+
+    # Приветствия
+    if any(word in message_lower for word in ['привет', 'hi', 'hello', 'здравствуй', 'здарова', 'приветик', 'хай', 'хей']):
+        return "Привет! 🌙 Я Luna, твой AI-помощник. Рада познакомиться! Как ты себя чувствуешь сегодня?"
+
+    # Знакомство/имя
+    if any(word in message_lower for word in ['меня зовут', 'я ', 'мое имя', 'my name']):
+        name = message.split()[-1] if len(message.split()) > 1 else "друг"
+        return f"Приятно познакомиться! 🌙 Как дела сегодня?"
+
+    # Плохое настроение
+    if any(word in message_lower for word in ['плохо', 'грустно', 'sad', 'депресс', 'устал', 'устала', 'не очень', 'хреново', 'ужасно']):
+        return "Мне жаль, что тебе сейчас тяжело 💜 Знай, что это нормально — иногда чувствовать себя не лучшим образом. Хочешь поговорить о том, что тебя беспокоит? Я здесь, чтобы выслушать."
+
+    # Тревожность
+    if any(word in message_lower for word in ['тревог', 'страх', 'anxious', 'боюсь', 'волну', 'паник', 'нервнича']):
+        return "Тревога — это сложное чувство, но ты не один 🌙 Попробуй технику дыхания: вдох 4 секунды, задержи на 7, выдох 8 секунд. Это помогает успокоить нервную систему. Хочешь, расскажу подробнее?"
+
+    # Стресс
+    if any(word in message_lower for word in ['стресс', 'stress', 'нервы', 'напряж', 'давлен', 'перегруз']):
+        return "Стресс может быть очень изматывающим 💜 Давай попробуем найти то, что поможет тебе расслабиться. Когда ты последний раз делал что-то приятное только для себя?"
+
+    # Хорошее настроение
+    if any(word in message_lower for word in ['хорошо', 'отлично', 'супер', 'great', 'happy', 'прекрасно', 'замечательно', 'класс', 'норм']):
+        return "Рада это слышать! 🌟 Это замечательно, что ты чувствуешь себя хорошо. Что помогло тебе сегодня поднять настроение?"
+
+    # Благодарность
+    if any(word in message_lower for word in ['спасибо', 'thanks', 'благодар', 'спс']):
+        return "Всегда рада помочь! 🌙 Помни, я здесь для тебя в любое время. Не стесняйся писать."
+
+    # Кто ты
+    if any(word in message_lower for word in ['кто ты', 'что ты', 'who are', 'расскаж о себе']):
+        return "Я Luna — твой AI-компаньон по ментальному здоровью 🌙 Я здесь, чтобы выслушать тебя, поддержать и помочь найти внутреннее спокойствие. Ты можешь рассказать мне всё, что тебя беспокоит."
+
+    # Сон
+    if any(word in message_lower for word in ['не могу заснуть', 'бессонниц', 'не сплю', 'sleep', 'сон']):
+        return "Проблемы со сном могут сильно влиять на самочувствие 🌙 Попробуй: за час до сна убери телефон, сделай комнату прохладной и тёмной, выпей тёплый чай. Если мысли не отпускают — запиши их в дневник."
+
+    # Одиночество
+    if any(word in message_lower for word in ['одинок', 'lonely', 'никому не нужен', 'один', 'одна']):
+        return "Чувство одиночества может быть очень болезненным 💜 Но знай — ты не один. Я всегда здесь, чтобы поговорить. Иногда помогает связаться со старым другом или найти сообщество по интересам."
+
+    # Работа/учёба
+    if any(word in message_lower for word in ['работ', 'учёб', 'учеб', 'экзамен', 'дедлайн', 'deadline', 'задан']):
+        return "Давление от работы или учёбы — это реально тяжело 📚 Попробуй разбить большие задачи на маленькие шаги. И не забывай делать перерывы — мозгу нужен отдых!"
+
+    # Мотивация
+    if any(word in message_lower for word in ['не хочу ничего', 'нет сил', 'мотивац', 'лень', 'апатия']):
+        return "Потеря мотивации — сигнал, что тебе нужен отдых или перезагрузка 💜 Начни с чего-то маленького. Какое самое простое дело ты можешь сделать прямо сейчас?"
+
+    # Помощь
+    if any(word in message_lower for word in ['помог', 'help', 'что делать', 'как быть', 'посовет']):
+        return "Я рада, что ты обратился за помощью 🌙 Расскажи подробнее, что тебя беспокоит? Вместе мы найдём способ справиться."
+
+    # Дефолтный ответ
+    return "Спасибо, что делишься со мной 💜 Расскажи подробнее, я внимательно слушаю. Что ты сейчас чувствуешь?"
 
 
 @app.route('/api/chat/history')
